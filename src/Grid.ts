@@ -2,8 +2,8 @@
  * @Author: wjz
  * @Date: 2021-10-29 09:54:14
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-13 23:41:27
- * @FilePath: /KMap-ts/src/Grid.ts
+ * @LastEditTime: 2021-11-14 00:43:53
+ * @FilePath: /kmaps/src/Grid.ts
  */
 import Konva from "./js/konva.min.js"
 
@@ -37,7 +37,7 @@ export default class Grid extends Konva.Group {
      * @param {number} param.size 网格单格大小默认50px
      */
     drawGraph(){
-      let stageNode = super.getStage()
+      let stageNode = this.getStage()
       //未获取到舞台节点，抛出异常
       if(stageNode == null){ console.error(new Error("The stage node was not obtained")); return}
       let sizeW = stageNode.width(),
@@ -63,7 +63,7 @@ export default class Grid extends Konva.Group {
           stroke: "#000000",
           strokeWidth: 0.1,
         })
-        super.add(levelLine)
+        this.add(levelLine)
       }
       for (let yc = 1; yc < XGCount; yc++) { //垂直线
         let verticalLine = new Konva.Line({
@@ -74,7 +74,7 @@ export default class Grid extends Konva.Group {
           stroke: "#000000",
           strokeWidth: 0.1,
         })
-        super.add(verticalLine)
+        this.add(verticalLine)
       }
       stageNode.addEventListener('dragmove', function(e) {
         self.absolutePosition({
