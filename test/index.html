@@ -1,0 +1,92 @@
+<!--
+ * @Author: wjz
+ * @Date: 2021-10-19 20:35:58
+ * @LastEditors: wjz
+ * @LastEditTime: 2021-11-13 19:07:40
+ * @FilePath: /KMap-ts/test/index.html
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>测试2</title>
+  <style>
+    * {
+      margin: 0;
+    }
+    #kmap {
+      width: 100vw;
+      height: 100vh;
+      background-color: rgb(218, 238, 255);
+    }
+  
+</style>
+</head>
+<body>
+  <div id="kmap"></div>
+  <script src="../lib/KMap.js"></script>
+  <!-- <script>
+    console.log(KMap)
+    let width = document.getElementById('kmap').clientWidth,
+        height = document.getElementById('kmap').clientHeight
+    
+    //创建舞台
+    const Stage = new KMap.Stage({
+      container:'kmap',
+      width,
+      height
+    })
+    //创建基础 图层
+    let baseLayer = new KMap.Layer({name:'baseLayer'})
+
+
+    Stage.add(baseLayer)
+  </script> -->
+  <script type="module">
+    import KMap from '../src/index.ts'
+    import img from './assets/map.png'
+    let width = document.getElementById('kmap').clientWidth,
+        height = document.getElementById('kmap').clientHeight
+    console.log(width,height);
+    //创建舞台
+    const stage = new KMap.Stage({
+      container:'kmap',
+      width,
+      height,
+      // scaleMax:20,
+      // scaleMin:0.5
+    })
+    //创建基础 图层
+    let baseLayer = new KMap.Layer({id:'baseLayer'}) 
+    stage.add(baseLayer)
+
+    let baseMap = new KMap.BaseMap() //创建底图层
+    let grid = new KMap.Grid({grid:100})// 创建网格层
+    let loc = new KMap.Location()
+
+    
+    baseLayer.add(baseMap,grid)
+
+    // console.log(grid);
+    // console.log("aaaa",window._KMap_Stage.findOne("#BaseMap"));
+
+    // grid.drawGraph({ //绘制网格
+    //   size:50
+    // })
+    
+    //加载图片
+    let image = new Image()
+    image.onload = async function() {
+     await baseMap.image(this) //绘制地图
+     baseLayer.add(loc)
+    }
+    image.src = img
+
+    // console.log(KMap,stage);
+  </script>
+</body>
+
+</html>
