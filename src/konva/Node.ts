@@ -327,7 +327,7 @@ export abstract class Node<Config extends NodeConfig = NodeConfig> {
       offset = conf.offset || 0,
       drawBorder = conf.drawBorder || false,
       hitCanvasPixelRatio = conf.hitCanvasPixelRatio || 1;
-
+    
     if (!width || !height) {
       Util.error(
         'Can not cache the node. Width or height of the node equals 0. Caching is skipped.'

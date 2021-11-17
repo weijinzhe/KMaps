@@ -17,7 +17,7 @@
   },
   "scripts": {
     "server": "gulp server",
-    "parcel": "parcel ./test/index.html -p 5000",
+    "parcel": "parcel ./test/index.html --lazy --host 192.168.2.101",
     "watch": "rollup -c -w",
     "rollup": "rollup -c",
     "tsc": "gulp tsc",

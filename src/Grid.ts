@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-29 09:54:14
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-14 00:43:53
+ * @LastEditTime: 2021-11-16 14:12:02
  * @FilePath: /kmaps/src/Grid.ts
  */
 import Konva from "./js/konva.min.js"
@@ -10,16 +10,12 @@ import Konva from "./js/konva.min.js"
 import {wheelEvent} from './_util'
 
 /**
- * @description 网格图层，网格参照层
+ * @description 网格图层，网格参照层 参数详情查看 https://konvajs.org/api/Konva.Group.html文档
  * @constructor
- * @augments Konva.Group
- * @param {Node} attrs.stage 网格基准节点（以舞台为准）
- * @param {number} attrs.size 网格尺寸
+ * @extends Konva.Group
+ * @param {number} size 网格尺寸
  * @example
- * let grid = new KMap.Grid()
- * grid.drawGrid({
- *  size:50
- * })
+ * let grid = new KMap.Grid({size:50})
  */
 export default class Grid extends Konva.Group {
     constructor(attrs:object = {} ) {
@@ -28,24 +24,24 @@ export default class Grid extends Konva.Group {
       attrs['y'] = 0
       super(attrs)
     }
-    /** 节点被添加到图层后自动绘制 */
+    /* 节点被添加到图层后自动绘制 */
     _draw(){
       this.drawGraph()
     }
-    /**
+    /*
      * @description 绘制网格图层
      * @param {number} param.size 网格单格大小默认50px
      */
     drawGraph(){
-      let stageNode = this.getStage()
+      let _stage = this.getStage()
       //未获取到舞台节点，抛出异常
-      if(stageNode == null){ console.error(new Error("The stage node was not obtained")); return}
-      let sizeW = stageNode.width(),
-        sizeH = stageNode.height();
+      if(_stage == null){ throw new Error("The stage node was not obtained"); return}
+      let sizeW = _stage.width(),
+        sizeH = _stage.height();
       let self = this
       let size = this.attrs.grid || 50
-      let stagePos = stageNode.absolutePosition() //舞台位置 .起始绘制点
-      let scale = stageNode.scaleX()
+      let stagePos = _stage.absolutePosition() //舞台位置 .起始绘制点
+      let scale = _stage.scaleX()
   
       let startPoint = {
         x: (sizeW - stagePos.x) / scale,
@@ -76,14 +72,14 @@ export default class Grid extends Konva.Group {
         })
         this.add(verticalLine)
       }
-      stageNode.addEventListener('dragmove', function(e) {
+      _stage.addEventListener('dragmove', function(e) {
         self.absolutePosition({
           x: 0,
           y: 0
         }) //反向位移，将网格重置为初始位置
       })
 
-      wheelEvent(stageNode , (e) => {
+      wheelEvent(_stage , (e) => {
         if(e.type == "wheelend"){
 
           self.absolutePosition({
@@ -91,13 +87,13 @@ export default class Grid extends Konva.Group {
             y: 0
           }) //将网格重置为0点
           self.scale({
-            x: 1 / stageNode.scale().x,
-            y: 1 / stageNode.scale().y
+            x: 1 / _stage.scale().x,
+            y: 1 / _stage.scale().y
           })
         }
       })
 
-      stageNode.addEventListener('pinchend', function(e) {
+      _stage.addEventListener('pinchend', function(e) {
         self.absolutePosition({
           x: 0,
           y: 0

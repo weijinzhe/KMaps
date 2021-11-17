@@ -2,12 +2,12 @@
  * @Author: wjz
  * @Date: 2021-10-22 16:20:15
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-13 23:43:01
- * @FilePath: /KMap-ts/src/_util.ts
+ * @LastEditTime: 2021-11-16 14:11:27
+ * @FilePath: /kmaps/src/_util.ts
  */
 import Hammers from './js/hammer-konva.js'
 
-/**
+/*
  * 
  * @param pos 图层拖拽范围限制
  * @returns pos 拖拽后的坐标
@@ -65,7 +65,7 @@ export function dragBoundFunc(pos:object) {
   return scope
 }
 
-/**
+/*
  * @description 手势以及鼠标缩放控制
  */
 export function Hammer() {
@@ -144,7 +144,7 @@ export function Hammer() {
 }
 
 
-/**
+/*
  * @description 鼠标滚轮结束事件
  * @param {Object} target 响应目标
  * @param {Object} callBack 事件结束回调

@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-19 20:35:58
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-14 20:20:20
+ * @LastEditTime: 2021-11-17 14:29:05
  * @FilePath: /kmaps/test/index.html
 -->
 <!DOCTYPE html>
@@ -12,7 +12,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>测试2</title>
+  <title>测试</title>
   <style>
     * {
       margin: 0;
@@ -24,8 +24,9 @@
     }
     .butt{
       position: absolute;
-      top: 10px;
-      left: 10px;
+      top: 20px;
+      left: 20px;
+      z-index: 1000;
     }
 </style>
 </head>
@@ -69,22 +70,30 @@
     stage.add(baseLayer)
 
     let baseMap = new KMap.BaseMap() //创建底图层
+    let path =  new KMap.Path()
     let grid = new KMap.Grid({grid:60})// 创建网格层
     let loc = new KMap.Location()
-    baseLayer.add(baseMap,grid)
-    // console.log(grid);
-    // console.log("aaaa",window._KMap_Stage.findOne("#BaseMap"));
 
-    // grid.drawGraph({ //绘制网格
-    //   size:50
-    // })
+    let track = new KMap.Track()
+    baseLayer.add(baseMap)
+    
     
     //加载图片
     let image = new Image()
     image.onload = async function() {
+      
      await baseMap.image(this) //绘制地图
-     baseLayer.add(loc)
+     baseLayer.add(path,grid,track,loc)
+
      loc.location({x:100,y:200,angle:90})
+
+     let image =  baseLayer.toDataURL({
+          mimeType:"image/png",
+          quality:1,
+          pixelRatio:2
+        })
+        // this.visible(false)
+        // console.log(image);
     }
     image.src = img
 
@@ -93,10 +102,43 @@
      let d = loc.draggable() 
      loc.draggable(!d) 
      console.log(loc.location());
+
+        
     })
 
     loc.addEventListener('drags',(e)=> {
       console.log(e);
+    })
+
+    path.drawGraph({
+      id:'1',
+      points:[5, 70, 140, 23, 250, 60, 300, 20],
+      stroke:"#0099FF",
+
+    })
+    path.drawGraph({
+      id:'2',
+      points:[20, 100, 150, 23, 250, 60, 300, 20],
+      stroke:"#0099FF",
+    })
+    path.cache({
+      pixelRatio:4 //4倍像素
+    })
+    path.hitFun((e)=> {
+      console.log(e);
+      if(e.attrs.stroke == "#0099FF"){
+        e.stroke("#33bb33")
+        path.cache({
+          pixelRatio:4 //4倍像素
+        })
+      }else{
+        e.stroke("#0099FF")
+        path.cache({
+          pixelRatio:4 //4倍像素
+        })
+      }
+
+      
     })
     
   </script>

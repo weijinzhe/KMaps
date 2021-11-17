@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-29 11:10:22
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-14 20:19:06
+ * @LastEditTime: 2021-11-17 14:19:32
  * @FilePath: /kmaps/src/Location.ts
  */
 
@@ -10,11 +10,6 @@ import Konva from "./js/konva.min.js"
 
 import { wheelEvent } from './_util'
 
-const _scale: any = Symbol('scope_scale');
-
-const _scope_scale: any = Symbol('_scope_scale');
-
-const _getDraggable: any = Symbol('_getDraggable');
 
 interface pos {
   x: number,
@@ -23,13 +18,14 @@ interface pos {
 }
 
 /**
- * @description 定位点，图形组
+ * @description 定位点，图形组 参数详情查看https://konvajs.org/api/Konva.Group.html文档
+ * @class
  * @constructor
- * @augments Konva.Group
- * @event drags 定位点拖拽事件 返回拖拽后的位置及角度
+ * @extends Konva.Group
  */
 export default class Location extends Konva.Group {
   constructor(attrs: object = {}) {
+    attrs["id"] = "Location"
     super(attrs)
     this._drawstate = false
     this._stage = (window as any)._KMap_Stage
@@ -37,17 +33,14 @@ export default class Location extends Konva.Group {
     // this._locGroup = new Konva.Group()
     // this.add(this._locGroup)
   }
-  /** 节点被添加到图层后自动绘制 */
+  /*节点被添加到图层后自动绘制 */
   _draw() {
     this.drawGraph()
   }
-  /**
-   * @description 绘制定位图形
-   * @event drags 定位点拖拽事件 返回拖拽后的位置及方向角度
-   * 
-   */
+  //绘制定位图形
   drawGraph() {
     this._drawstate = true
+    // this._stage = this.getStage()
     const map = this._stage.findOne("#BaseMap")
     const self = this
 
@@ -126,6 +119,12 @@ export default class Location extends Konva.Group {
       strokeWidth: 0.1,
       visible: true
     });
+
+    this.add(this._drag_group, this._scope, this._anchor) //添加定位锚点到主图组
+
+    /**
+     * @event drags  定位拖拽事件
+     */
     var myEvent = new CustomEvent('drags', {
       detail: {
         x: self.x() - map.x(),
@@ -159,7 +158,6 @@ export default class Location extends Konva.Group {
     })
 
 
-    this.add(this._drag_group, this._scope, this._anchor) //添加定位锚点到主图组
     //loc_scope.moveToBottom()
     //响应舞台缩放，固定相对画布缩放倍数
     function scale_event() {
@@ -171,7 +169,7 @@ export default class Location extends Konva.Group {
       })
       //放大固定倍数，缩小固定倍数怎样判定
       self._scope.strokeWidth(0.1 / scale)
-      if (!self[_getDraggable]()) {
+      // if (!self[_getDraggable]()) {
         let s = scale
         if (scale > 8) {
           s = 8 * (8 / scale)
@@ -180,8 +178,11 @@ export default class Location extends Konva.Group {
           x: s,
           y: s
         })
-      }
+        
+      // }
     }
+    this._scale_event = scale_event
+    
     //手势缩放结束
     this._stage.addEventListener("pinchend", function () {
       scale_event()
@@ -197,7 +198,8 @@ export default class Location extends Konva.Group {
 
   /** 
    * @description 设置定位点是否可拖拽
-   * @param param 是否可拖拽
+   * @param {boolean} param 是否可拖拽
+   * @override
    * @example
    * node.draggable(true) //可拖拽
    * node.draggable(false) //不可拖拽
@@ -205,7 +207,6 @@ export default class Location extends Konva.Group {
   draggable(param: boolean) {
     if(!this._drawstate){
       return
-      //  console.error(new Error(''))
     }
     if (!arguments.length) { return super.draggable() }
     super.draggable(param)
@@ -213,35 +214,12 @@ export default class Location extends Konva.Group {
     this._scope.visible(!param)
     return super.draggable()
   }
-  //不可被外部访问Symbol类型
-  [_getDraggable]() {
-    return super.draggable()
-  }
-
-  /* draggableEvent(fun) {
-
-    this.addEventListener('dragmove',(e)=> {
-    const map = this._stage.findOne("#BaseMap")
-
-      fun({
-        x:this.x() - map.x(),
-      y:this.y() - map.y(),
-          angle:this._anchor.rotation()
-        })
-    })
-    this._drag_group_anchor.addEventListener('dragmove', (e)=> {
-    const map = this._stage.findOne("#BaseMap")
-
-      fun({
-        x:this.x() - map.x(),
-      y:this.y() - map.y(),
-          angle:this._anchor.rotation()
-        })
-    })
-  } */
   /**
    * @description 更新定位点
-   * @param {JSON} param {x,y,angle} number
+   * @param {number} param.x number
+   * @param {number} param.y number
+   * @param {number} param.angle number
+   * 
    * @return  "{x,y,angle}" number
    * @example
    * node.location({x,y,angle}) //get
@@ -250,7 +228,6 @@ export default class Location extends Konva.Group {
   location(param: pos) {
     if(!this._drawstate){
       return
-      //  console.error(new Error(''))
     }
     const map = this._stage.findOne("#BaseMap")
     if (!arguments.length) {
@@ -287,19 +264,6 @@ export default class Location extends Konva.Group {
 // 定位锚点绘制初始化图形组
 function anchor(radius: number) {
   let group = new Konva.Group()
-  //辅助圆形范围
-  let scope = new Konva.Circle({ //定位点范围
-    id: "anchor_scope",
-    radius: radius * 8,
-    fillRadialGradientColorStops: [0, 'rgba(252, 0, 13, 0.4)', 0.3, 'rgba(252, 0, 13, 0.2)', 1,
-      'rgba(255, 255, 255,0)'
-    ],
-    fillRadialGradientStartRadius: radius * 8,
-    fillRadialGradientEndRadius: 0,
-    stroke: 'rgba(252, 0, 13, 0.5)', //'rgb(32, 244, 18)', //'rgb(252, 0, 13)', //'rgb(80, 138, 255)'
-    strokeWidth: 0.5,
-  });
-  this.scope = scope //方便外部操作辅助图形
   let circle = new Konva.Circle({ //圆心
     id: "anchor_circle",
     radius: radius,

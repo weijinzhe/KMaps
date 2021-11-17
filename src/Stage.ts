@@ -2,8 +2,8 @@
  * @Author: wjz
  * @Date: 2021-10-22 14:14:27
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-12 10:52:24
- * @FilePath: /KMap-ts/src/Stage.ts
+ * @LastEditTime: 2021-11-16 10:44:07
+ * @FilePath: /kmaps/src/Stage.ts
  */
 import Konva from "./js/konva.min.js"
 
@@ -13,7 +13,7 @@ import {dragBoundFunc,Hammer} from './_util'
 /**
  * @description 非地理坐标地图 创建舞台
  * @constructor
- * @augments Konva.Stage
+ * @extends Konva.Stage
  * @example
  * var stage = new Stage(attrs)
  */

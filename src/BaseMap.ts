@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-26 15:59:56
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-14 00:42:53
+ * @LastEditTime: 2021-11-16 13:36:13
  * @FilePath: /kmaps/src/BaseMap.ts
  */
 import Konva from "./js/konva.min.js"
@@ -11,7 +11,6 @@ import Konva from "./js/konva.min.js"
  * @constructor
  * @class
  * @extends {Konva.Image}
- * @augments Konva.Image
  * @example 
  * let node = new BaseMap(可选参数) //详情参照Konva中的Image
  */
