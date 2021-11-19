@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-29 09:54:14
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-16 14:12:02
+ * @LastEditTime: 2021-11-17 15:36:21
  * @FilePath: /kmaps/src/Grid.ts
  */
 import Konva from "./js/konva.min.js"

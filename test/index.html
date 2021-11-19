@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-19 20:35:58
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-17 14:29:05
+ * @LastEditTime: 2021-11-20 02:12:57
  * @FilePath: /kmaps/test/index.html
 -->
 <!DOCTYPE html>
@@ -17,130 +17,189 @@
     * {
       margin: 0;
     }
+
     #kmap {
       width: 100vw;
       height: 100vh;
       background-color: rgb(218, 238, 255);
     }
-    .butt{
+
+    .butt {
       position: absolute;
       top: 20px;
       left: 20px;
       z-index: 1000;
     }
-</style>
+  </style>
 </head>
+
 <body>
   <div id="kmap"></div>
-  <button class="butt" type="button">定位拖拽</button>
+  <div class="butt">
+    <button class="loc" type="button">定位拖拽</button>
+    <button class="shape" type="button">富信息编辑</button>
+  </div>
+
+
   <script src="../lib/KMap.js"></script>
-  <!-- <script>
-    console.log(KMap)
-    let width = document.getElementById('kmap').clientWidth,
-        height = document.getElementById('kmap').clientHeight
-    
-    //创建舞台
-    const Stage = new KMap.Stage({
-      container:'kmap',
-      width,
-      height
-    })
-    //创建基础 图层
-    let baseLayer = new KMap.Layer({name:'baseLayer'})
+  <script type="module">
+    import { bezierData } from './util.js'
 
-
-    Stage.add(baseLayer)
-  </script> -->
-  <script type="module" ID="module">
     import KMap from '../src/index.ts'
-    import img from './assets/map.png'
+    import img from './assets/maps.png'
     let width = document.getElementById('kmap').clientWidth,
-        height = document.getElementById('kmap').clientHeight
-    console.log(width,height);
+      height = document.getElementById('kmap').clientHeight
+    console.log(width, height);
     //创建舞台
     const stage = new KMap.Stage({
-      container:'kmap',
+      container: 'kmap',
       width,
       height,
       // scaleMax:20,
       // scaleMin:0.5
     })
     //创建基础 图层
-    let baseLayer = new KMap.Layer({id:'baseLayer'}) 
+    let baseLayer = new KMap.Layer({ id: 'baseLayer' })
     stage.add(baseLayer)
 
     let baseMap = new KMap.BaseMap() //创建底图层
-    let path =  new KMap.Path()
-    let grid = new KMap.Grid({grid:60})// 创建网格层
+    // let path = new KMap.Path()
+    let pathGroup = new KMap.Group({ id: "pathGroup" })
+    let shapeGroup = new KMap.Group({ id: "shapeGroup" })
+
+    let grid = new KMap.Grid({ grid: 60 })// 创建网格层
     let loc = new KMap.Location()
 
     let track = new KMap.Track()
-    baseLayer.add(baseMap)
-    
-    
+    baseLayer.add(baseMap, pathGroup, grid, shapeGroup, track, loc)
+
+
     //加载图片
     let image = new Image()
-    image.onload = async function() {
-      
-     await baseMap.image(this) //绘制地图
-     baseLayer.add(path,grid,track,loc)
-
-     loc.location({x:100,y:200,angle:90})
-
-     let image =  baseLayer.toDataURL({
-          mimeType:"image/png",
-          quality:1,
-          pixelRatio:2
-        })
-        // this.visible(false)
-        // console.log(image);
+    image.onload = async function () {
+      await baseMap.image(this) //绘制地图
+      pathGroup.position(baseMap.position()) //重置pathGroup 相对坐标位置
+      let image = baseLayer.toDataURL({
+        mimeType: "image/png",
+        quality: 1,
+        pixelRatio: 2
+      })
+      // this.visible(false)
     }
     image.src = img
+    loc.location({ x: 100, y: 100, angle: 90 })
 
     // console.log(KMap,stage);
-    document.querySelector(".butt").addEventListener('click',()=> {
-     let d = loc.draggable() 
-     loc.draggable(!d) 
-     console.log(loc.location());
+    document.querySelector(".loc").addEventListener('click', () => {
+      let d = loc.draggable()
+      loc.draggable(!d)
+      console.log(loc.location());
 
-        
-    })
-
-    loc.addEventListener('drags',(e)=> {
-      console.log(e);
-    })
-
-    path.drawGraph({
-      id:'1',
-      points:[5, 70, 140, 23, 250, 60, 300, 20],
-      stroke:"#0099FF",
 
     })
-    path.drawGraph({
-      id:'2',
-      points:[20, 100, 150, 23, 250, 60, 300, 20],
-      stroke:"#0099FF",
-    })
-    path.cache({
-      pixelRatio:4 //4倍像素
-    })
-    path.hitFun((e)=> {
-      console.log(e);
-      if(e.attrs.stroke == "#0099FF"){
-        e.stroke("#33bb33")
-        path.cache({
-          pixelRatio:4 //4倍像素
-        })
-      }else{
-        e.stroke("#0099FF")
-        path.cache({
-          pixelRatio:4 //4倍像素
-        })
+
+    // loc.addEventListener('drags', (e) => {
+    //   console.log(e);
+    // })
+    //获取路径数据
+    let url = "http://192.168.1.10:62002/api/map/area/edges?map=613715e5fee0c72a632453cb&map_areas="
+    let xhr = new XMLHttpRequest()
+    xhr.open("GET", url)
+    xhr.send()
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        // 处理响应正文responseText，多数是json数据
+        let data = JSON.parse(xhr.responseText).data
+        let pathData = bezierData(data)
+        pathData.forEach((item) => {
+          let path = new KMap.Path({
+            id: item.id,
+            points: item.edges,
+            stroke: "#0099FF",
+            hitEvent: true
+          })
+          pathGroup.add(path)
+          pathGroup.cache({
+            pixelRatio: 3 //4倍像素
+          })
+          path.addEventListener("click touchend", function () {
+            if (this.attrs.stroke == "#0099FF") {
+              this.stroke("#33bb33")
+            } else {
+              this.stroke("#0099FF")
+            }
+            pathGroup.cache({
+              pixelRatio: 3 //4倍像素
+            })
+          })
+        });
       }
+    }
 
+    //http://192.168.1.10:62002/api/map/area/edges?map=613715e5fee0c72a632453cb&map_areas=
+
+    let Line = new KMap.Line({
+      id: "aaa",
+      points: [[100, 200], [500, 500]],
+      color:"#fc0a07"
+    })
+    shapeGroup.add(Line)
+    // Line.draggable(true)
+    // Line.draggable(false)
+    var targetShape = null
+    Line.on("click touchend", function (e) {
+      console.log(e);
+      e.cancelBubble = true;
+      // if(!this.draggable()){
+      this.draggable(true)
+      console.log("11", this.getPoints());
+
+      // }
+      targetShape = this
+
+    })
+    let polygon = new KMap.Polygon({
+      id: "bbb",
+      points: [[200, 200], [500, 200],[500,500],[200,500]],
+      color:"#fc0a07"
+    })
+    shapeGroup.add(polygon)
+
+
+    polygon.on("click touchend", function (e) {
+      e.cancelBubble = true;
+      // if(!this.draggable()){
+      this.draggable(true)
+      console.log(this.getPoints());
+
+      // }
+      targetShape = this
+
+    })
+
+    document.querySelector(".shape").addEventListener('click', () => {
+      targetShape.draggable(false)
+      console.log(targetShape.getPoints() );
       
     })
+
+    stage.on("dragstart dragend", function (e) {
+      e.cancelBubble = true;
+      if (e.type == "dragend") {
+        shapeGroup.visible(true)
+      } else {
+        shapeGroup.visible(false)
+      }
+    })
+    KMap.Util.wheelEvent(stage, (e) => {
+      if (e.type == "wheelend") {
+        shapeGroup.visible(true)
+      } else {
+        shapeGroup.visible(false)
+      }
+    })
     
+
   </script>
 </body>
 

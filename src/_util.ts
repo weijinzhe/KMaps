@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-22 16:20:15
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-16 14:11:27
+ * @LastEditTime: 2021-11-20 00:27:10
  * @FilePath: /kmaps/src/_util.ts
  */
 import Hammers from './js/hammer-konva.js'
@@ -85,7 +85,8 @@ export function Hammer() {
   var pointer:any ={x:0,y:0}
 
   this.on(' pinchstart pinchmove pinchend wheel', (e) => { //鼠标缩放
-    e.evt.preventDefault();
+    e.cancelBubble = true;
+    // e.evt.preventDefault();
     var oldScale = this.scaleX();
     let mousePointTo:any = {},
       newScale = 1,
@@ -152,23 +153,25 @@ export function Hammer() {
 export function wheelEvent(target:Node,callBack:Function) {
     let st = null;
     target.addEventListener('wheel', function(e) {
-      Reflect.defineProperty(e,"type",{
-        value:"wheelstart",
+      
+    let a =  Reflect.defineProperty(e,"type",{
+        value:"wheelmove",
         enumerable: false,
         configurable: false,
         writable: true,
       })
       callBack(e)
       clearTimeout(st)
+      st = null
       st = setTimeout(() => {
         Reflect.defineProperty(e,"type",{
           value:"wheelend",
           enumerable: false,
           configurable: false,
-          writable: false,
+          writable: true,
         })
         callBack(e)
-      }, 100)
+      }, 50)
     })
   }
 
@@ -176,4 +179,30 @@ export function scaleConversio(params:any) {
   
 }
 
+
+export function colorRgba(sHex:any, alpha:number = 1){
+  // 十六进制颜色值的正则表达式
+  var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/
+  /* 16进制颜色转为RGB格式 */
+  let sColor = sHex.toLowerCase()
+  if (sColor && reg.test(sColor)) {
+    if (sColor.length === 4) {
+      var sColorNew = '#'
+      for (let i = 1; i < 4; i += 1) {
+        sColorNew += sColor.slice(i, i + 1).concat(sColor.slice(i, i + 1))
+      }
+      sColor = sColorNew
+    }
+    //  处理六位的颜色值
+    var sColorChange = []
+    for (let i = 1; i < 7; i += 2) {
+      sColorChange.push(parseInt('0x' + sColor.slice(i, i + 2)))
+    }
+    // return sColorChange.join(',')
+    // 或
+    return 'rgba(' + sColorChange.join(',') + ',' + alpha + ')'
+  } else {
+    return sColor
+  }
+}
   

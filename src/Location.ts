@@ -2,14 +2,13 @@
  * @Author: wjz
  * @Date: 2021-10-29 11:10:22
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-17 14:19:32
+ * @LastEditTime: 2021-11-20 02:19:03
  * @FilePath: /kmaps/src/Location.ts
  */
 
 import Konva from "./js/konva.min.js"
 
 import { wheelEvent } from './_util'
-
 
 interface pos {
   x: number,
@@ -22,16 +21,32 @@ interface pos {
  * @class
  * @constructor
  * @extends Konva.Group
+ * @param {boolean} awaitMap 是否监听地图变化自动重置相对坐标 默认true
+ * 
  */
 export default class Location extends Konva.Group {
   constructor(attrs: object = {}) {
     attrs["id"] = "Location"
+    attrs["awaitMap"] = true
+
     super(attrs)
+    this._group = new Konva.Group("_Location") //坐标系基准，以此图组作为相对位置
+    this.add(this._group)
+    
     this._drawstate = false
-    this._stage = (window as any)._KMap_Stage
+    this._stage = window["_KMap"]["_Stage"] //(window as any)._KMap_Stage
     this._drag_group_anchor = this
-    // this._locGroup = new Konva.Group()
-    // this.add(this._locGroup)
+
+    if(attrs["awaitMap"]){
+      window["_KMap"]["_BaseMap_unpdata"].push(this._position.bind(this))
+      this.visible(false)
+    }
+    
+  }
+  async _position(map){
+    let {x,y} = map.attrs
+    this.position({x,y})
+    this.visible(true)
   }
   /*节点被添加到图层后自动绘制 */
   _draw() {
@@ -40,13 +55,7 @@ export default class Location extends Konva.Group {
   //绘制定位图形
   drawGraph() {
     this._drawstate = true
-    // this._stage = this.getStage()
-    const map = this._stage.findOne("#BaseMap")
     const self = this
-
-    if (map) {
-      this.move(map.position()) //重置定位锚点初始坐标
-    }
     let radius = 12
     const _anchor: any = anchor(radius)
     this._anchor = _anchor
@@ -91,7 +100,7 @@ export default class Location extends Konva.Group {
       hitStrokeWidth: 20,
       draggable: true, //拖拽 
       dragBoundFunc: function (pos) {
-        let center = self.absolutePosition() //圆心
+        let center = self._group.absolutePosition() //圆心
         let radian = Math.atan2((pos.y - center.y), (pos.x - center.x)) // 弧度
         let x = center.x + 80 / _drag_group_scope.scaleX() * Math.cos(radian),
           y = center.y + 80 / _drag_group_scope.scaleY() * Math.sin(radian);
@@ -120,39 +129,43 @@ export default class Location extends Konva.Group {
       visible: true
     });
 
-    this.add(this._drag_group, this._scope, this._anchor) //添加定位锚点到主图组
+    this._group.add(this._drag_group, this._scope, this._anchor) //添加定位锚点到主图组
 
-    /**
+    /*
      * @event drags  定位拖拽事件
      */
     var myEvent = new CustomEvent('drags', {
       detail: {
-        x: self.x() - map.x(),
-        y: self.y() - map.y(),
+        x: this._group.x() ,
+        y: this._group.y() ,
         angle: _anchor.rotation()
       }
     });
-    this.addEventListener('dragmove', function (e) {
+    this._group.on('dragmove', function (e) {
+      e.cancelBubble = true;
+
       //自定义事件 ，返回拖拽后的坐标位置
-      myEvent.detail.x = self.x() - map.x()
-      myEvent.detail.y = self.y() - map.y()
+      myEvent.detail.x = this.x() 
+      myEvent.detail.y = this.y() 
       myEvent.detail.angle = _anchor.rotation()
       self.dispatchEvent(myEvent);
     })
 
     //角度调整
-    _drag_group_anchor.addEventListener('dragmove', function (e) {
+    _drag_group_anchor.on('dragmove', function (e) {
+      e.cancelBubble = true;
+
       let {
         x,
         y
-      } = this.position() //this.absolutePosition()
+      } = this.position()
       let deg = 180 * Math.atan2(y, x) / Math.PI
       _drag_group_line.points([0, 0, x, y])
       _anchor.rotation(deg)
 
       //自定义事件 ，返回拖拽后的坐标位置
-      myEvent.detail.x = self.x() - map.x()
-      myEvent.detail.y = self.y() - map.y()
+      myEvent.detail.x = self._group.x() 
+      myEvent.detail.y = self._group.y() 
       myEvent.detail.angle = _anchor.rotation()
       self.dispatchEvent(myEvent);
     })
@@ -160,16 +173,14 @@ export default class Location extends Konva.Group {
 
     //loc_scope.moveToBottom()
     //响应舞台缩放，固定相对画布缩放倍数
-    function scale_event() {
+   async function scale_event() {
       let scale = self._stage.scaleX()
-      // let scope = self._scope
-      self.scale({
+      self._group.scale({
         x: 1 / scale,
         y: 1 / scale
       })
       //放大固定倍数，缩小固定倍数怎样判定
       self._scope.strokeWidth(0.1 / scale)
-      // if (!self[_getDraggable]()) {
         let s = scale
         if (scale > 8) {
           s = 8 * (8 / scale)
@@ -178,13 +189,12 @@ export default class Location extends Konva.Group {
           x: s,
           y: s
         })
-        
-      // }
     }
-    this._scale_event = scale_event
+    this._group._scale_event = scale_event
     
     //手势缩放结束
-    this._stage.addEventListener("pinchend", function () {
+    this._stage.addEventListener("pinchend", function (e) {
+      e.cancelBubble = true;
       scale_event()
     })
     //鼠标滑轮缩放
@@ -208,17 +218,17 @@ export default class Location extends Konva.Group {
     if(!this._drawstate){
       return
     }
-    if (!arguments.length) { return super.draggable() }
-    super.draggable(param)
+    if (!arguments.length) { return this._group.draggable() }
+    this._group.draggable(param)
     this._drag_group.visible(param)
     this._scope.visible(!param)
-    return super.draggable()
+    return this._group.draggable()
   }
   /**
    * @description 更新定位点
-   * @param {number} param.x number
-   * @param {number} param.y number
-   * @param {number} param.angle number
+   * @param {number} x x轴坐标
+   * @param {number} y y轴坐标
+   * @param {number} angle 方向角度
    * 
    * @return  "{x,y,angle}" number
    * @example
@@ -226,20 +236,19 @@ export default class Location extends Konva.Group {
    * let pos =  node.location() //set
    */
   location(param: pos) {
+    
     if(!this._drawstate){
       return
     }
-    const map = this._stage.findOne("#BaseMap")
     if (!arguments.length) {
       return {
-        x: this.x() - map.x(),
-        y: this.y() - map.y(),
+        x: this._group.x(), 
+        y: this._group.y(), 
         angle: this._anchor.rotation()
       }
     }
-    this.position({ x: param.x, y: param.y })
-    this.move(map.position()) //更改为图片坐标系
-    let center = this.absolutePosition() //圆心
+    this._group.position({ x: param.x, y: param.y })
+    let center = this._group.position() //圆心
     let radian = param.angle * Math.PI / 180 //Math.atan2((pos.y-center.y), (pos.x-center.x)) // 弧度
     let x = center.x + this._drag_group_scope.radius() * this._drag_group_scope.scaleX() * Math.cos(radian),
       y = center.y + this._drag_group_scope.radius() * this._drag_group_scope.scaleY() * Math.sin(radian);
@@ -248,8 +257,8 @@ export default class Location extends Konva.Group {
     this._drag_group_line.points([0, 0, arPos.x, arPos.y])
     this._anchor.rotation(param.angle)
     return {
-      x: this.x() - map.x(),
-      y: this.y() - map.y(),
+      x: this._group.x(), 
+      y: this._group.y(),
       angle: this._anchor.rotation()
     }
   }
