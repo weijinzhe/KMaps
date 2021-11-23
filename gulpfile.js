@@ -1,9 +1,16 @@
 /*
  * @Author: wjz
+ * @Date: 2021-11-22 10:42:22
+ * @LastEditors: wjz
+ * @LastEditTime: 2021-11-23 11:05:35
+ * @FilePath: /kmaps/gulpfile.js
+ */
+/*
+ * @Author: wjz
  * @Date: 2021-10-18 14:45:54
  * @LastEditors: wjz
- * @LastEditTime: 2021-10-26 17:26:47
- * @FilePath: /KMap-ts/gulpfile.js
+ * @LastEditTime: 2021-11-22 10:41:38
+ * @FilePath: /kmaps/gulpfile.js
  */
 import gulp from 'gulp';
 import jsdoc from 'gulp-jsdoc3';
@@ -26,7 +33,7 @@ var tsProject = ts.createProject('tsconfig.json') //根据配置文件初始化�
 gulp.task('tsc',function(){
   return gulp.src('./src/konva/**')
     .pipe(tsProject())
-    .pipe(concat({ path: 'KMap.js', newLine: ';'}))
+    .pipe(concat({ path: 'KMaps.js', newLine: ';'}))
     // .pipe(uglify()) //压缩文件
     // .pipe(rename({suffix:'.min'})) //重命名
     .pipe(gulp.dest('lib'))
@@ -50,8 +57,8 @@ gulp.task('build',function () {
     })
     .then(bundle => {
       return bundle.write({
-        file: 'lib/KMap.js', //出口文件
-        name: 'KMap', //名字
+        file: 'lib/KMaps.js', //出口文件
+        name: 'KMaps', //名字
         format: 'umd',
         sourcemap: false,
       });
@@ -60,7 +67,7 @@ gulp.task('build',function () {
 
 //压缩文件
 gulp.task('build-min',function(){
-  return gulp.src('lib/KMap.js') //找到目标文件，读取文件
+  return gulp.src('lib/KMaps.js') //找到目标文件，读取文件
     .pipe(uglify()) //压缩文件
     .pipe(rename({suffix:'.min'})) //重命名
     .pipe(gulp.dest('lib/'))
@@ -83,7 +90,7 @@ gulp.task('server', function () {
 });
 
 gulp.task('api', function () {
-  return gulp.src('./lib/KMap.js').pipe(
+  return gulp.src('./lib/KMaps.js').pipe(
     jsdoc({
       opts: {
         destination: './api',

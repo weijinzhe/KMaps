@@ -3,7 +3,7 @@
  * @Author: wjz
  * @Date: 2021-11-18 10:08:49
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-20 02:16:06
+ * @LastEditTime: 2021-11-22 15:41:35
  * @FilePath: /kmaps/src/Line.ts
  */
 
@@ -61,7 +61,9 @@ export default class Line extends ShapeNode {
     })
     async function scale_event (){
       let scale = self._stage.scaleX()
-      self._line.strokeWidth(5 / scale)
+      self._line.strokeWidth(4 / scale)
+      self._line.hitStrokeWidth(20 / scale)
+
       //拖拽锚点
       let anchorArr = self.find("._drag_anchor")
       for(let item of  anchorArr){

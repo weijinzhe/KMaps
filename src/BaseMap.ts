@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-26 15:59:56
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-20 02:10:30
+ * @LastEditTime: 2021-11-22 09:33:45
  * @FilePath: /kmaps/src/BaseMap.ts
  */
 import Konva from "./js/konva.min.js"
@@ -47,10 +47,10 @@ export default class BaseMap extends Konva.Group {
       let width = img.width, //图片宽度
         height = img.height; //图片高度
       let stage = super.getStage()
-      // this.position({
-      //   x: stage.size().width / 2 - width / 2,
-      //   y: stage.size().height / 2 - height / 2
-      // })
+      this.position({
+        x: stage.size().width / 2 - width / 2,
+        y: stage.size().height / 2 - height / 2
+      })
       this.size({
         width,
         height

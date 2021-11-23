@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-29 11:10:22
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-23 11:42:42
+ * @LastEditTime: 2021-11-23 11:38:41
  * @FilePath: /kmaps/src/Location.ts
  */
 
@@ -30,8 +30,8 @@ export default class Location extends Konva.Group {
     attrs["awaitMap"] = true
 
     super(attrs)
-    // this._group = new Konva.Group("_Location") //坐标系基准，以此图组作为相对位置
-    // this.add(this._group)
+    this._group = new Konva.Group("_Location") //坐标系基准，以此图组作为相对位置
+    this.add(this._group)
     
     this._drawstate = false
     this._stage = window["_KMap"]["_Stage"] //(window as any)._KMap_Stage
@@ -100,7 +100,7 @@ export default class Location extends Konva.Group {
       hitStrokeWidth: 20,
       draggable: true, //拖拽 
       dragBoundFunc: function (pos) {
-        let center = self.absolutePosition() //圆心
+        let center = self._group.absolutePosition() //圆心
         let radian = Math.atan2((pos.y - center.y), (pos.x - center.x)) // 弧度
         let x = center.x + 80 / _drag_group_scope.scaleX() * Math.cos(radian),
           y = center.y + 80 / _drag_group_scope.scaleY() * Math.sin(radian);
@@ -129,19 +129,19 @@ export default class Location extends Konva.Group {
       visible: true
     });
 
-    this.add(this._drag_group, this._scope, this._anchor) //添加定位锚点到主图组
+    this._group.add(this._drag_group, this._scope, this._anchor) //添加定位锚点到主图组
 
     /*
      * @event drags  定位拖拽事件
      */
     var myEvent = new CustomEvent('drag', {
       detail: {
-        x: this.x() ,
-        y: this.y() ,
+        x: this._group.x() ,
+        y: this._group.y() ,
         angle: _anchor.rotation()
       }
     });
-    this.on('dragmove', function (e) {
+    this._group.on('dragmove', function (e) {
       e.cancelBubble = true;
 
       //自定义事件 ，返回拖拽后的坐标位置
@@ -164,8 +164,8 @@ export default class Location extends Konva.Group {
       _anchor.rotation(deg)
 
       //自定义事件 ，返回拖拽后的坐标位置
-      myEvent.detail.x = self.x() 
-      myEvent.detail.y = self.y() 
+      myEvent.detail.x = self._group.x() 
+      myEvent.detail.y = self._group.y() 
       myEvent.detail.angle = _anchor.rotation()
       self.dispatchEvent(myEvent);
     })
@@ -175,7 +175,7 @@ export default class Location extends Konva.Group {
     //响应舞台缩放，固定相对画布缩放倍数
    async function scale_event() {
       let scale = self._stage.scaleX()
-      self.scale({
+      self._group.scale({
         x: 1 / scale,
         y: 1 / scale
       })
@@ -190,7 +190,7 @@ export default class Location extends Konva.Group {
           y: s
         })
     }
-    this._scale_event = scale_event
+    this._group._scale_event = scale_event
     
     //手势缩放结束
     this._stage.addEventListener("pinchend", function (e) {
@@ -218,11 +218,11 @@ export default class Location extends Konva.Group {
     if(!this._drawstate){
       return
     }
-    if (!arguments.length) { return super.draggable() }
-    super.draggable(param)
+    if (!arguments.length) { return this._group.draggable() }
+    this._group.draggable(param)
     this._drag_group.visible(param)
     this._scope.visible(!param)
-    return super.draggable()
+    return this._group.draggable()
   }
   /**
    * @description 更新定位点
@@ -242,13 +242,13 @@ export default class Location extends Konva.Group {
     }
     if (!arguments.length) {
       return {
-        x: this.x(), 
-        y: this.y(), 
+        x: this._group.x(), 
+        y: this._group.y(), 
         angle: this._anchor.rotation()
       }
     }
-    this.position({ x: param.x, y: param.y })
-    let center = this.position() //圆心
+    this._group.position({ x: param.x, y: param.y })
+    let center = this._group.position() //圆心
     let radian = param.angle * Math.PI / 180 //Math.atan2((pos.y-center.y), (pos.x-center.x)) // 弧度
     let x = center.x + this._drag_group_scope.radius() * this._drag_group_scope.scaleX() * Math.cos(radian),
       y = center.y + this._drag_group_scope.radius() * this._drag_group_scope.scaleY() * Math.sin(radian);
@@ -257,8 +257,8 @@ export default class Location extends Konva.Group {
     this._drag_group_line.points([0, 0, arPos.x, arPos.y])
     this._anchor.rotation(param.angle)
     return {
-      x: this.x(), 
-      y: this.y(),
+      x: this._group.x(), 
+      y: this._group.y(),
       angle: this._anchor.rotation()
     }
   }

@@ -2,12 +2,11 @@
  * @Author: wjz
  * @Date: 2021-11-17 15:18:38
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-18 10:00:11
+ * @LastEditTime: 2021-11-22 19:12:58
  * @FilePath: /kmaps/test/util.js
  */
 export function bezierData(data) {
-  // console.log(data);
-  pathArr = []
+ let pathArr = []
   data.forEach(items => {
     let arr = []
     items.edges.forEach((item, index, array) => {

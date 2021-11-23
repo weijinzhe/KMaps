@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-29 09:54:14
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-17 15:36:21
+ * @LastEditTime: 2021-11-22 15:25:57
  * @FilePath: /kmaps/src/Grid.ts
  */
 import Konva from "./js/konva.min.js"
@@ -50,7 +50,7 @@ export default class Grid extends Konva.Group {
       let XGCount = Math.round(startPoint.x / size),
         YGCount = Math.round(startPoint.y / size)
   
-      for (let xc = 1; xc < YGCount + 1; xc++) { //水平线
+      for (let xc = 1; xc <= YGCount; xc++) { //水平线
         let levelLine = new Konva.Line({
           name: 'levelLine',
           points: [0 - stagePos.x - 0.5, (0 - stagePos.y) + size * xc - 0.5, startPoint.x - 0.5, (0 -
@@ -61,7 +61,7 @@ export default class Grid extends Konva.Group {
         })
         this.add(levelLine)
       }
-      for (let yc = 1; yc < XGCount; yc++) { //垂直线
+      for (let yc = 1; yc <= XGCount; yc++) { //垂直线
         let verticalLine = new Konva.Line({
           name: 'verticalLine',
           points: [size * yc - 0.5, 0 - stagePos.y - 0.5, size * yc - 0.5, startPoint.y -

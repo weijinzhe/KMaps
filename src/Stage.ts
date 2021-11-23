@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-22 14:14:27
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-20 02:15:42
+ * @LastEditTime: 2021-11-22 10:10:55
  * @FilePath: /kmaps/src/Stage.ts
  */
 import Konva from "./js/konva.min.js"
@@ -36,7 +36,7 @@ export default class Stage extends Konva.Stage {
         let hammer = Hammer.bind(this)
         hammer()
     }
-    /**
+    /*
      * @description 获取当前位置画布的中心坐标
      * @returns {x,y} 返回当前舞台中心对应在画布上的坐标位置（已转换缩放问题）
      */

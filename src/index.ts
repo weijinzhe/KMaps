@@ -2,10 +2,10 @@
  * @Author: wjz
  * @Date: 2021-10-21 15:30:30
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-20 02:20:28
+ * @LastEditTime: 2021-11-23 10:24:50
  * @FilePath: /kmaps/src/index.ts
  */
-// import konva from './js/konva.min.js'
+import Konva from './js/konva.min.js'
 
 window["_KMap"] = {};
 window["_KMap"]["_BaseMap_unpdata"] = [] //地图图片更新
@@ -26,12 +26,14 @@ import Track from './Track'
 import Path from './Path'
 import Line from "./Line"
 import Polygon from "./Polygon";
+import Circle from './Circle';
 
 export default {
+    Konva,
     Hammer,
     Util,
     Stage, //舞台
-    Layer, //底层库 图层
+    Layer, //底层 图层
     Group,
     BaseMap,
     Grid,
@@ -40,5 +42,6 @@ export default {
     Path,
     Line,
     Polygon,
+    Circle,
     versions:"1.0.0"
 }
