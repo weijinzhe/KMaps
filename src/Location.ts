@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-29 11:10:22
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-23 11:42:42
+ * @LastEditTime: 2021-11-23 11:48:09
  * @FilePath: /kmaps/src/Location.ts
  */
 
@@ -21,7 +21,7 @@ interface pos {
  * @class
  * @constructor
  * @extends Konva.Group
- * @param {boolean} awaitMap 是否监听地图变化自动重置相对坐标 默认true
+ * @param {boolean} awaitMap 是否监听地图变化自动重置相对坐标 默认true 
  * 
  */
 export default class Location extends Konva.Group {
@@ -232,8 +232,8 @@ export default class Location extends Konva.Group {
    * 
    * @return  "{x,y,angle}" number
    * @example
-   * node.location({x,y,angle}) //get
-   * let pos =  node.location() //set
+   * node.location({x,y,angle}) //get 返回坐标为相对父节点坐标位置 position 
+   * let pos =  node.location() //set 设置坐标为相对父节点坐标位置 position 
    */
   location(param: pos) {
     
