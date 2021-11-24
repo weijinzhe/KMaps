@@ -2,13 +2,14 @@
  * @Author: wjz
  * @Date: 2021-10-22 14:14:27
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-22 10:10:55
+ * @LastEditTime: 2021-11-24 18:44:18
  * @FilePath: /kmaps/src/Stage.ts
  */
 import Konva from "./js/konva.min.js"
 
 import { dragBoundFunc, Hammer } from './_util'
 
+var EVENT = new CustomEvent('scale');
 
 /**
  * @description 非地理坐标地图 创建舞台
@@ -35,6 +36,15 @@ export default class Stage extends Konva.Stage {
         window["_KMap"]["_Stage"] = this; //将_KMap挂载到window对象上
         let hammer = Hammer.bind(this)
         hammer()
+    }
+    /**
+     * @description 设置舞台缩放值 功能与 scale一致 但没有返回值，不可获取缩放，只能设置
+     * @param {number} x x轴缩放比例
+     * @param {number} y y轴缩放比例
+     */
+     setscale(param:any = {x:0,y:0}){
+      this.scale(param)
+      this.dispatchEvent(EVENT);
     }
     /*
      * @description 获取当前位置画布的中心坐标

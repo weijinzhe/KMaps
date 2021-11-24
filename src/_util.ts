@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-22 16:20:15
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-20 00:27:10
+ * @LastEditTime: 2021-11-24 17:07:15
  * @FilePath: /kmaps/src/_util.ts
  */
 import Hammers from './js/hammer-konva.js'
@@ -69,6 +69,8 @@ export function dragBoundFunc(pos:object) {
  * @description 手势以及鼠标缩放控制
  */
 export function Hammer() {
+
+  
   let scaleRange = {
     max:this.attrs.scaleMax,
     min:this.attrs.scaleMin
@@ -80,13 +82,35 @@ export function Hammer() {
   hammer.get('pinch').set({
     enable: true
   });
+  var scaleStart = new CustomEvent('scalestart', {
+    detail: {
+      scale:1,
+      pointer:[0,0]
+    }
+  });
+  var scaleMove = new CustomEvent('scalemove', {
+    detail: {
+      scale:1,
+      pointer:[0,0]
+    }
+  });
+  var scaleend = new CustomEvent('scaleend', {
+    detail: {
+      scale:1,
+      pointer:[0,0]
+    }
+  });
 
-  var scaleBy = 1.02;
+
+
+  var scaleBy = 1.05;
   var pointer:any ={x:0,y:0}
-
+  let st = null; //鼠标滚轮反馈
+  let wheelState = true
   this.on(' pinchstart pinchmove pinchend wheel', (e) => { //鼠标缩放
     e.cancelBubble = true;
-    // e.evt.preventDefault();
+    //全局缩放事件
+    
     var oldScale = this.scaleX();
     let mousePointTo:any = {},
       newScale = 1,
@@ -113,10 +137,31 @@ export function Hammer() {
           y: newScale
         });
         this.position(newPos);
+        if(wheelState){
+          scaleStart.detail.scale =  newScale
+          scaleStart.detail.pointer == [pointer.x,pointer.y]
+          this.dispatchEvent(scaleStart);
+          wheelState = false
+        }else{
+          scaleMove.detail.scale =  newScale
+          scaleMove.detail.pointer == [pointer.x,pointer.y]
+          this.dispatchEvent(scaleMove);
+          wheelState = false
+        }
+        clearTimeout(st)
+        st = setTimeout(() => { //滚动触发间隔50ms为滚动结束
+          scaleend.detail.scale =  newScale
+          scaleend.detail.pointer == [pointer.x,pointer.y]
+          this.dispatchEvent(scaleend);
+          wheelState = true
+        }, 100)
         break;
       case 'pinchstart': //捏放开始
         this.draggable(false)
         pointer = this.getPointerPosition(); //e.evt.gesture.center; //缩放基准点
+        scaleend.detail.scale =  this.scaleX()
+        scaleend.detail.pointer == [pointer.x,pointer.y]
+        this.dispatchEvent(scaleend);
         break;
       case 'pinchmove': //捏放中
         mousePointTo = {
@@ -136,9 +181,18 @@ export function Hammer() {
           y: newScale
         });
         this.position(newPos);
+
+        scaleend.detail.scale =  newScale
+        scaleend.detail.pointer == [pointer.x,pointer.y]
+        this.dispatchEvent(scaleend);
         break;
       case 'pinchend': //捏放结束
         this.draggable(true)
+        this.dispatchEvent(scaleend);
+
+        scaleend.detail.scale =  this.scaleX()
+        scaleend.detail.pointer == [pointer.x,pointer.y]
+        this.dispatchEvent(scaleend);
         break;
     }
   });
@@ -174,10 +228,6 @@ export function wheelEvent(target:Node,callBack:Function) {
       }, 50)
     })
   }
-
-export function scaleConversio(params:any) {
-  
-}
 
 
 export function colorRgba(sHex:any, alpha:number = 1){

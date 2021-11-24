@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-29 11:10:22
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-23 11:48:09
+ * @LastEditTime: 2021-11-24 16:43:12
  * @FilePath: /kmaps/src/Location.ts
  */
 
@@ -193,16 +193,16 @@ export default class Location extends Konva.Group {
     this._scale_event = scale_event
     
     //手势缩放结束
-    this._stage.addEventListener("pinchend", function (e) {
+    this._stage.addEventListener("scaleend", function (e) {
       e.cancelBubble = true;
       scale_event()
     })
-    //鼠标滑轮缩放
-    wheelEvent(this._stage, (e: any) => {
-      if (e.type == "wheelend") {
-        scale_event()
-      }
-    })
+    // //鼠标滑轮缩放
+    // wheelEvent(this._stage, (e: any) => {
+    //   if (e.type == "wheelend") {
+    //     scale_event()
+    //   }
+    // })
 
   }
 
@@ -230,10 +230,11 @@ export default class Location extends Konva.Group {
    * @param {number} y y轴坐标
    * @param {number} angle 方向角度
    * 
-   * @return  "{x,y,angle}" number
    * @example
    * node.location({x,y,angle}) //get 返回坐标为相对父节点坐标位置 position 
    * let pos =  node.location() //set 设置坐标为相对父节点坐标位置 position 
+   * 
+   * @return  {x,y,angle} number
    */
   location(param: pos) {
     
@@ -248,7 +249,7 @@ export default class Location extends Konva.Group {
       }
     }
     this.position({ x: param.x, y: param.y })
-    let center = this.position() //圆心
+    let center = this.absolutePosition() //圆心
     let radian = param.angle * Math.PI / 180 //Math.atan2((pos.y-center.y), (pos.x-center.x)) // 弧度
     let x = center.x + this._drag_group_scope.radius() * this._drag_group_scope.scaleX() * Math.cos(radian),
       y = center.y + this._drag_group_scope.radius() * this._drag_group_scope.scaleY() * Math.sin(radian);
@@ -297,7 +298,6 @@ function anchor(radius: number) {
     radius: radius - 1,
     rotation: 90,
     fill: 'rgb(255, 0, 0)', //'#0033FF',
-
   });
   group.add(arrow, circle)
   return group

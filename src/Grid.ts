@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-29 09:54:14
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-22 15:25:57
+ * @LastEditTime: 2021-11-24 18:27:50
  * @FilePath: /kmaps/src/Grid.ts
  */
 import Konva from "./js/konva.min.js"
@@ -79,28 +79,28 @@ export default class Grid extends Konva.Group {
         }) //反向位移，将网格重置为初始位置
       })
 
-      wheelEvent(_stage , (e) => {
-        if(e.type == "wheelend"){
+      // wheelEvent(_stage , (e) => {
+      //   if(e.type == "wheelend"){
 
-          self.absolutePosition({
-            x: 0,
-            y: 0
-          }) //将网格重置为0点
-          self.scale({
-            x: 1 / _stage.scale().x,
-            y: 1 / _stage.scale().y
-          })
-        }
-      })
+      //     self.absolutePosition({
+      //       x: 0,
+      //       y: 0
+      //     }) //将网格重置为0点
+      //     self.scale({
+      //       x: 1 / _stage.scale().x,
+      //       y: 1 / _stage.scale().y
+      //     })
+      //   }
+      // })
 
-      _stage.addEventListener('pinchend', function(e) {
+      _stage.addEventListener('scaleend scale', function(e) {
         self.absolutePosition({
           x: 0,
           y: 0
         }) //反向位移，将网格重置为初始位置
         self.scale({
-          x: 1 / this.scale().x,
-          y: 1 / this.scale().y
+          x: 1 / this.scaleX(),
+          y: 1 / this.scaleY()
         })
       })
     }

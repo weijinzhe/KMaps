@@ -3,7 +3,7 @@
  * @Author: wjz
  * @Date: 2021-11-18 10:08:49
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-22 15:41:35
+ * @LastEditTime: 2021-11-24 16:49:53
  * @FilePath: /kmaps/src/Line.ts
  */
 
@@ -49,16 +49,16 @@ export default class Line extends ShapeNode {
     let self = this
     this._stage = window["_KMap"]["_Stage"]  //(window as any)._KMap_Stage
 
-    this._stage.addEventListener("pinchend", function (e:any) {
+    this._stage.addEventListener("scaleend", function (e:any) {
       e.cancelBubble = true;
       scale_event()
     })
     //鼠标滑轮缩放
-    wheelEvent(this._stage, (e: any) => {
-      if (e.type == "wheelend") {
-        scale_event()
-      }
-    })
+    // wheelEvent(this._stage, (e: any) => {
+    //   if (e.type == "wheelend") {
+    //     scale_event()
+    //   }
+    // })
     async function scale_event (){
       let scale = self._stage.scaleX()
       self._line.strokeWidth(4 / scale)

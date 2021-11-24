@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-19 20:35:58
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-23 11:43:55
+ * @LastEditTime: 2021-11-23 15:58:16
  * @FilePath: /kmaps/test/index.html
 -->
 <!DOCTYPE html>
@@ -66,12 +66,13 @@
     // let path = new KMaps.Path()
     let pathGroup = new KMaps.Group({ id: "pathGroup" })
     let shapeGroup = new KMaps.Group({ id: "shapeGroup" })
+    let circleGroup = new KMaps.Group({ id: "circleGroup" }) //图形层
     let locationGroup = new KMaps.Group({ id: "locationGroup" }) //定位层
     let grid = new KMaps.Grid({ grid: 60 })// 创建网格层
     let loc = new KMaps.Location()
     locationGroup.add(loc)
     let track = new KMaps.Track()
-    baseLayer.add(baseMap, pathGroup, grid, shapeGroup, track, locationGroup)
+    baseLayer.add(baseMap, pathGroup, grid, shapeGroup, track,circleGroup, locationGroup)
 
 
     //加载图片
@@ -87,7 +88,7 @@
       // this.visible(false)
     }
     image.src = img
-    loc.location({ x: 100, y: 1000, angle: 90 })
+    loc.location({ x: -100, y: -100, angle: 90 })
 
     // console.log(KMaps,stage);
     document.querySelector(".loc").addEventListener('click', () => {
@@ -195,7 +196,15 @@
         shapeGroup.visible(false)
       }
     })
-    
+    let circle = new KMaps.Circle({
+      x:100,
+      y:100,
+      radius:5,
+      fill:"#FFD700",
+      shadowBlur:5,
+      shadowColor:"#FFD700"
+    })
+    circleGroup.add(circle)
 
   </script>
 </body>

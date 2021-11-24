@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-11-19 23:05:59
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-20 02:09:40
+ * @LastEditTime: 2021-11-24 16:52:37
  * @FilePath: /kmaps/src/Polygon.ts
  */
 import ShapeNode from './_ShapeNode'
@@ -39,21 +39,24 @@ export default class Polygon extends ShapeNode {
       strokeWidth: attrs.strokeWidth || 1,
       hitStrokeWidth: 0
     })
+    this._strokeWidth = attrs.strokeWidth || 1
     let self = this
     this._stage = window["_KMap"]["_Stage"]  //(window as any)._KMap_Stage
 
-    this._stage.addEventListener("pinchend", function (e:any) {
+    this._stage.addEventListener("scaleend", function (e:any) {
       e.cancelBubble = true;
       scale_event()
     })
-    //鼠标滑轮缩放
-    wheelEvent(this._stage, (e: any) => {
-      if (e.type == "wheelend") {
-        scale_event()
-      }
-    })
+    // //鼠标滑轮缩放
+    // wheelEvent(this._stage, (e: any) => {
+    //   if (e.type == "wheelend") {
+    //     scale_event()
+    //   }
+    // })
     async function scale_event (){
       let scale = self._stage.scaleX()
+      self._line.strokeWidth(self._strokeWidth / scale)
+
       //拖拽锚点
       let anchorArr = self.find("._drag_anchor")
       for(let item of  anchorArr){

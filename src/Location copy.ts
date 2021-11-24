@@ -2,8 +2,8 @@
  * @Author: wjz
  * @Date: 2021-10-29 11:10:22
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-23 11:38:41
- * @FilePath: /kmaps/src/Location.ts
+ * @LastEditTime: 2021-11-24 16:50:03
+ * @FilePath: /kmaps/src/Location copy.ts
  */
 
 import Konva from "./js/konva.min.js"
@@ -193,7 +193,7 @@ export default class Location extends Konva.Group {
     this._group._scale_event = scale_event
     
     //手势缩放结束
-    this._stage.addEventListener("pinchend", function (e) {
+    this._stage.addEventListener("scaleend", function (e) {
       e.cancelBubble = true;
       scale_event()
     })
