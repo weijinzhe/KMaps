@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-11-12 11:02:13
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-20 02:05:53
+ * @LastEditTime: 2021-11-29 11:33:13
  * @FilePath: /kmaps/src/Group.ts
  */
 import Konva from "./js/konva.min.js"
@@ -17,7 +17,8 @@ import Konva from "./js/konva.min.js"
  */
 export default class Group extends Konva.Group {
   constructor(attrs) {
-    attrs["awaitMap"] = true
+    !attrs["awaitMap"]? attrs["awaitMap"] = true : null
+
 
     super(attrs)
     if(attrs["awaitMap"]){
@@ -26,9 +27,10 @@ export default class Group extends Konva.Group {
     }
   }
   async _position(map){
+    this.visible(true)
+    if(!this.attrs.awaitMap){return}
     let {x,y} = map.attrs
     this.position({x,y})
-    this.visible(true)
   }
   /**
    * @description 添加子节点元素，参数顺序为节点图层排列顺序
@@ -42,5 +44,9 @@ export default class Group extends Konva.Group {
         item._draw()
       }
     }
+  }
+  awaitMap(param?:boolean){
+    if (!arguments.length) { return this.attrs.awaitMap }
+    this.attrs.awaitMap = param
   }
 }

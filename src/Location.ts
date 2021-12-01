@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-29 11:10:22
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-24 16:43:12
+ * @LastEditTime: 2021-12-01 15:36:52
  * @FilePath: /kmaps/src/Location.ts
  */
 
@@ -21,33 +21,16 @@ interface pos {
  * @class
  * @constructor
  * @extends Konva.Group
- * @param {boolean} awaitMap 是否监听地图变化自动重置相对坐标 默认true 
  * 
  */
 export default class Location extends Konva.Group {
   constructor(attrs: object = {}) {
     attrs["id"] = "Location"
-    attrs["awaitMap"] = true
-
     super(attrs)
-    // this._group = new Konva.Group("_Location") //坐标系基准，以此图组作为相对位置
-    // this.add(this._group)
-    
     this._drawstate = false
     this._stage = window["_KMap"]["_Stage"] //(window as any)._KMap_Stage
     this._drag_group_anchor = this
-
-    // if(attrs["awaitMap"]){
-    //   window["_KMap"]["_BaseMap_unpdata"].push(this._position.bind(this))
-    //   this.visible(false)
-    // }
-    
   }
-  // async _position(map){
-  //   let {x,y} = map.attrs
-  //   this.position({x,y})
-  //   this.visible(true)
-  // }
   /*节点被添加到图层后自动绘制 */
   _draw() {
     this.drawGraph()
@@ -193,7 +176,7 @@ export default class Location extends Konva.Group {
     this._scale_event = scale_event
     
     //手势缩放结束
-    this._stage.addEventListener("scaleend", function (e) {
+    this._stage.addEventListener("scaleend setscale", function (e) {
       e.cancelBubble = true;
       scale_event()
     })

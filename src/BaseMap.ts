@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-26 15:59:56
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-23 16:11:22
+ * @LastEditTime: 2021-11-29 11:29:49
  * @FilePath: /kmaps/src/BaseMap.ts
  */
 import Konva from "./js/konva.min.js"
@@ -11,7 +11,7 @@ import Konva from "./js/konva.min.js"
  * @constructor
  * @class
  * @extends {Konva.Image}
- * @param {boolean} awaitMap 是否等待底图绘制状态
+ * @param {boolean} awaitMap 是否等待底图绘制状态,开启坐标重置订阅器
  * 
  * @example 
  * let node = new BaseMap(可选参数) //详情参照Konva中的Image
@@ -19,15 +19,14 @@ import Konva from "./js/konva.min.js"
 export default class BaseMap extends Konva.Group {
     constructor(attrs:object = {}) {
       attrs['id'] = 'BaseMap';
-      attrs["awaitMap"] = true
-
+      !attrs["awaitMap"]? attrs["awaitMap"] = true : null
       super(attrs);
       this._image = new  Konva.Image({id:"_image"})
-      
+      this._state = false
       this.add(this._image)
       let self = this
       window["_KMap"]["_BaseMap"] = this; //将_KMap挂载到window对象上
-      this._wacth= new Proxy({},{ //监听图片绘制变化，调用图形坐标重置
+      this._wacth = new Proxy({},{ //监听图片绘制变化，调用图形坐标重置
         set: function (target, propKey, value, receiver) {
           window["_KMap"]["_BaseMap_unpdata"].forEach((item:any) => {
             item(self)
@@ -56,10 +55,14 @@ export default class BaseMap extends Konva.Group {
         height
       })
       this._image.image(img)
+      this._state = true
       if(this.attrs["awaitMap"]){
         this._wacth.time = new Date().getTime();
       }
-
       return this
+    }
+    awaitMap(param?:boolean){
+      if (!arguments.length) { return this.attrs.awaitMap }
+      this.attrs.awaitMap = param
     }
   }

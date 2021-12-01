@@ -3,7 +3,7 @@
  * @Author: wjz
  * @Date: 2021-11-18 10:08:49
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-22 16:46:27
+ * @LastEditTime: 2021-11-30 14:00:04
  * @FilePath: /kmaps/src/_ShapeNode.ts
  */
 
@@ -18,8 +18,8 @@ interface attrs {
   name?:string,
   points: [[number, number], [number, number]]
   color:string,
-  strokeWidth:number,
-  hitStrokeWidth:number
+  strokeWidth?:number,
+  hitStrokeWidth?:number
 }
 
 

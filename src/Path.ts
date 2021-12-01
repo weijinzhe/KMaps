@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-11-17 11:11:23
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-20 02:09:24
+ * @LastEditTime: 2021-11-29 11:29:01
  * @FilePath: /kmaps/src/Path.ts
  */
 
@@ -16,7 +16,7 @@ interface attrs {
   points:[number],
   stroke:string,
   strokeWidth?:number
-  hitEvent?:boolean
+  // hitEvent?:boolean
 }
 
 
@@ -25,7 +25,6 @@ interface attrs {
  * @constructor
  * @class
  * @param {JSON} attrs 参数详情查看https://konvajs.org/api/Konva.Line.html文档
- * @param {boolean} awaitMap 是否等待底图绘制状态
  * @example
  * 
  * let node = new Path(attrs)
@@ -36,20 +35,8 @@ export default class Path extends Konva.Line {
     attrs["hitStrokeWidth"] = 15
     attrs["lineJoin"] = "round"
     attrs["lineCap"] = "round"
-    attrs["awaitMap"] = true
-    
     super(attrs)
-    // if(attrs["awaitMap"]){
-    //   window["_KMap"]["_BaseMap_unpdata"].push(this._position.bind(this))
-    //   this.visible(false)
-    // }
   }
-  //重置相对坐标
-  // async _position(map){
-  //   let {x,y} = map.attrs
-  //   super.position({x,y})
-  //   this.visible(true)
-  // }
  }
 
 

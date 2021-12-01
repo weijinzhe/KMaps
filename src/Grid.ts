@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-29 09:54:14
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-24 18:27:50
+ * @LastEditTime: 2021-12-01 15:32:00
  * @FilePath: /kmaps/src/Grid.ts
  */
 import Konva from "./js/konva.min.js"
@@ -93,7 +93,7 @@ export default class Grid extends Konva.Group {
       //   }
       // })
 
-      _stage.addEventListener('scaleend scale', function(e) {
+      _stage.addEventListener('scaleend setscale', function(e) {
         self.absolutePosition({
           x: 0,
           y: 0

@@ -2,14 +2,14 @@
  * @Author: wjz
  * @Date: 2021-10-22 14:14:27
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-24 18:44:18
+ * @LastEditTime: 2021-12-01 15:30:13
  * @FilePath: /kmaps/src/Stage.ts
  */
 import Konva from "./js/konva.min.js"
 
 import { dragBoundFunc, Hammer } from './_util'
 
-var EVENT = new CustomEvent('scale');
+var EVENT = new CustomEvent('setscale');
 
 /**
  * @description 非地理坐标地图 创建舞台

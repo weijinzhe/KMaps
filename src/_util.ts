@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-22 16:20:15
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-24 17:07:15
+ * @LastEditTime: 2021-12-01 15:55:06
  * @FilePath: /kmaps/src/_util.ts
  */
 import Hammers from './js/hammer-konva.js'
@@ -159,9 +159,9 @@ export function Hammer() {
       case 'pinchstart': //捏放开始
         this.draggable(false)
         pointer = this.getPointerPosition(); //e.evt.gesture.center; //缩放基准点
-        scaleend.detail.scale =  this.scaleX()
-        scaleend.detail.pointer == [pointer.x,pointer.y]
-        this.dispatchEvent(scaleend);
+        scaleStart.detail.scale =  this.scaleX()
+        scaleStart.detail.pointer == [pointer.x,pointer.y]
+        this.dispatchEvent(scaleStart);
         break;
       case 'pinchmove': //捏放中
         mousePointTo = {
@@ -182,9 +182,9 @@ export function Hammer() {
         });
         this.position(newPos);
 
-        scaleend.detail.scale =  newScale
-        scaleend.detail.pointer == [pointer.x,pointer.y]
-        this.dispatchEvent(scaleend);
+        scaleMove.detail.scale =  newScale
+        scaleMove.detail.pointer == [pointer.x,pointer.y]
+        this.dispatchEvent(scaleMove);
         break;
       case 'pinchend': //捏放结束
         this.draggable(true)
