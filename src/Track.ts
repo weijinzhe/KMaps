@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-11-15 13:36:06
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-30 13:26:12
+ * @LastEditTime: 2021-12-01 19:13:01
  * @FilePath: /kmaps/src/Track.ts
  */
 import Konva from "./js/konva.min.js"
@@ -53,7 +53,6 @@ interface attrs  {
     this.visible(true)
     let attrs = this.attrs
     const map = this._stage.findOne("#BaseMap")
-    console.log(map.width()* attrs.pixelRatio);
     
     //创建录屏渲染画布，绘制图像
     this._bufferCanvas = document.createElement('canvas'); 

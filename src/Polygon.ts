@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-11-19 23:05:59
  * @LastEditors: wjz
- * @LastEditTime: 2021-12-01 15:37:33
+ * @LastEditTime: 2021-12-03 10:41:44
  * @FilePath: /kmaps/src/Polygon.ts
  */
 import ShapeNode from './_ShapeNode'
@@ -35,6 +35,8 @@ interface attrs {
 export default class Polygon extends ShapeNode {
   constructor(attrs: attrs) {
     attrs["absoluteSize"] == false ? null : attrs["absoluteSize"] = true //绝对尺寸，不与舞台一同缩放
+    attrs["closed"] = true
+
     super({
       ...attrs,
       // name:"Polygon",
