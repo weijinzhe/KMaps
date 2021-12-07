@@ -3,13 +3,12 @@
  * @Author: wjz
  * @Date: 2021-11-18 10:08:49
  * @LastEditors: wjz
- * @LastEditTime: 2021-12-03 11:14:57
+ * @LastEditTime: 2021-12-03 17:21:45
  * @FilePath: /kmaps/src/_ShapeNode.ts
  */
 
 import Konva from "./js/konva.min";
 
-// import Konva from "./konva/index"
 
 import { wheelEvent, colorRgba } from './_util'
 
@@ -21,7 +20,8 @@ interface attrs {
   points: [[number, number], [number, number]]
   color: string,
   strokeWidth?: number,
-  hitStrokeWidth?: number
+  hitStrokeWidth?: number,
+  draggable?:boolean
 }
 
 
@@ -31,6 +31,11 @@ interface attrs {
 export default class ShapeNode extends Konva.Group {
   constructor(attrs: attrs) {
     super(attrs)
+    if(attrs.draggable){
+      this.on("dragstart.—custom dragmove.—custom dragend.—custom touchstart.—custom touchmove.—custom touchend.—custom", function (e: any) {
+        e.cancelBubble = true;//阻止事件冒泡
+      })
+    }
     this._stage = window["_KMap"]["_Stage"]  //(window as any)._KMap_Stage
     this._lineFun(attrs)
     attrs.points.forEach((_item: any, _index: any, _array: any) => {
@@ -48,6 +53,7 @@ export default class ShapeNode extends Konva.Group {
     });
   }
   _lineFun(attrs: any) {
+    let scale = this._stage.scale()
     let rgb = attrs.color ? colorRgba(attrs.color, 0.5) : ""
     let _points = this._pointsArray(attrs.points)
     let _line = new Konva.Line({
@@ -57,7 +63,7 @@ export default class ShapeNode extends Konva.Group {
       closed: attrs.closed,
       stroke: attrs.color,
       fill: rgb,
-      strokeWidth: attrs.strokeWidth,
+      strokeWidth: (attrs.strokeWidth|| 1 ) / scale.x,
       hitStrokeWidth: 20, //自定义图形选取范围 
     })
     this.add(_line)
@@ -65,17 +71,19 @@ export default class ShapeNode extends Konva.Group {
 
   }
   _circleFun({ x, y }, index: number) {
+    let scale = this._stage.scale()
     let self = this
     let _anchor = new Konva.Circle({
       id: `_drag_anchor-${index}`, //拖拽点id
       name: "_drag_anchor",
       x, y,
+      scale:{x:1/scale.x,y:1/scale.y},
       radius: 20,
       fill: 'rgba(255,255,255,0.6)',
       stroke: '#00aaff',
       strokeWidth: 2,
       hitStrokeWidth: 20, //自定义图形选取范围 
-      visible: false, //默认显示状态
+      visible: super.draggable() || false, //默认显示状态
       draggable: true,
     })
     this.add(_anchor)
@@ -122,9 +130,8 @@ export default class ShapeNode extends Konva.Group {
    * let points = node.getPoints() //[[10，10],[2020],...]
    */
   getPoints() {
-    // let points = [] //拖拽锚点当前坐标
     let points = this.find("._drag_anchor").map(item => {
-      let { x, y } = item.position()
+      let { x, y } = item.getAbsolutePosition(this.getParent()) //相对父级节点的绝对位置
       return [x, y]
     })
     return points

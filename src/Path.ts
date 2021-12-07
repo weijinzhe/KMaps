@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-11-17 11:11:23
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-29 11:29:01
+ * @LastEditTime: 2021-12-06 13:41:23
  * @FilePath: /kmaps/src/Path.ts
  */
 
@@ -15,7 +15,8 @@ interface attrs {
   id:string,
   points:[number],
   stroke:string,
-  strokeWidth?:number
+  strokeWidth?:number,
+  hitStrokeWidth?:number
   // hitEvent?:boolean
 }
 
@@ -32,9 +33,9 @@ interface attrs {
 export default class Path extends Konva.Line {
   constructor(attrs:attrs) {
     attrs["bezier"] = true
-    attrs["hitStrokeWidth"] = 15
     attrs["lineJoin"] = "round"
     attrs["lineCap"] = "round"
+    // attrs["hitStrokeWidth"] = 15
     super(attrs)
   }
  }

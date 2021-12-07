@@ -3,7 +3,7 @@
  * @Author: wjz
  * @Date: 2021-11-18 10:08:49
  * @LastEditors: wjz
- * @LastEditTime: 2021-12-02 18:44:49
+ * @LastEditTime: 2021-12-06 15:18:48
  * @FilePath: /kmaps/src/Line.ts
  */
 
@@ -40,7 +40,7 @@ interface attrs {
  */
 export default class Line extends ShapeNode {
   constructor(attrs: attrs) {
-    attrs["absoluteSize"] == false ? null : attrs["absoluteSize"] = true //绝对尺寸，不与舞台一同缩放
+    attrs["absoluteSize"] === false ? null : attrs["absoluteSize"] = true //绝对尺寸，不与舞台一同缩放
     attrs["closed"] = false
     super({
       ...attrs,
@@ -53,7 +53,7 @@ export default class Line extends ShapeNode {
 
     _stage.addEventListener("scaleend setscale", function (e:any) {
       e.cancelBubble = true;
-        scale_event()
+      scale_event()
     })
     //鼠标滑轮缩放
     // wheelEvent(this._stage, (e: any) => {

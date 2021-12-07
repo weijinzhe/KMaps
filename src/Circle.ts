@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-11-22 16:45:13
  * @LastEditors: wjz
- * @LastEditTime: 2021-12-01 15:37:15
+ * @LastEditTime: 2021-12-06 15:20:31
  * @FilePath: /kmaps/src/Circle.ts
  */
 import konvaMin from "./js/konva.min";
@@ -42,7 +42,7 @@ interface attrs {
  */
 export default class Circle extends Konva.Circle {
   constructor(attrs: any) {
-    attrs["absoluteSize"] == false ? null : attrs["absoluteSize"] = true //绝对尺寸，不与舞台一同缩放
+    attrs["absoluteSize"] === false ? null : attrs["absoluteSize"] = true //绝对尺寸，不与舞台一同缩放
     super(attrs)
     let _stage = window["_KMap"]["_Stage"] //(window as any)._KMap_Stage
     let self = this
