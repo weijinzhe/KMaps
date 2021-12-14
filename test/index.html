@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-19 20:35:58
  * @LastEditors: wjz
- * @LastEditTime: 2021-12-06 13:36:15
+ * @LastEditTime: 2021-12-14 11:10:02
  * @FilePath: /kmaps/test/index.html
 -->
 <!DOCTYPE html>
@@ -64,10 +64,10 @@
 
     let baseMap = new KMaps.BaseMap() //创建底图层
     // let path = new KMaps.Path()
-    let pathGroup = new KMaps.Group({ id: "pathGroup" })
+    let pathGroup = new KMaps.Group({ id: "pathGroup"})
     let trackGroup = new KMaps.Group({ id: "trackGroup" }) //轨迹
 
-    let shapeGroup = new KMaps.Group({ id: "shapeGroup" })
+    let shapeGroup = new KMaps.Group({ id: "shapeGroup" ,awaitMap:false })
     let circleGroup = new KMaps.Group({ id: "circleGroup" }) //图形层
     let locationGroup = new KMaps.Group({ id: "locationGroup" }) //定位层
     let grid = new KMaps.Grid({ grid: 60 })// 创建网格层

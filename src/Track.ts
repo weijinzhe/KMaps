@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-11-15 13:36:06
  * @LastEditors: wjz
- * @LastEditTime: 2021-12-01 19:13:01
+ * @LastEditTime: 2021-12-14 11:00:35
  * @FilePath: /kmaps/src/Track.ts
  */
 import Konva from "./js/konva.min.js"
@@ -32,7 +32,8 @@ interface attrs  {
  export default class Track extends Konva.Group {
   constructor(attrs: attrs) {
     attrs["id"] = "Track"
-    !attrs["awaitMap"]? attrs["awaitMap"] = true : null
+    // !attrs["awaitMap"]? attrs["awaitMap"] = true : null
+    attrs["awaitMap"] !== false ? attrs["awaitMap"] = true : null
     super(attrs)
     this._stage = window["_KMap"]["_Stage"] //(window as any)._KMap_Stage
   }

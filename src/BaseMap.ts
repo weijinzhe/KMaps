@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-26 15:59:56
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-29 11:29:49
+ * @LastEditTime: 2021-12-14 11:00:06
  * @FilePath: /kmaps/src/BaseMap.ts
  */
 import Konva from "./js/konva.min.js"
@@ -19,7 +19,8 @@ import Konva from "./js/konva.min.js"
 export default class BaseMap extends Konva.Group {
     constructor(attrs:object = {}) {
       attrs['id'] = 'BaseMap';
-      !attrs["awaitMap"]? attrs["awaitMap"] = true : null
+      // !attrs["awaitMap"]? attrs["awaitMap"] = true : null
+      attrs["awaitMap"] !== false ? attrs["awaitMap"] = true : null
       super(attrs);
       this._image = new  Konva.Image({id:"_image"})
       this._state = false

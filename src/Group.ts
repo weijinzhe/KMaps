@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-11-12 11:02:13
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-29 11:33:13
+ * @LastEditTime: 2021-12-14 11:04:54
  * @FilePath: /kmaps/src/Group.ts
  */
 import Konva from "./js/konva.min.js"
@@ -17,9 +17,7 @@ import Konva from "./js/konva.min.js"
  */
 export default class Group extends Konva.Group {
   constructor(attrs) {
-    !attrs["awaitMap"]? attrs["awaitMap"] = true : null
-
-
+    attrs["awaitMap"] !== false ? attrs["awaitMap"] = true : null
     super(attrs)
     if(attrs["awaitMap"]){
       window["_KMap"]["_BaseMap_unpdata"].push(this._position.bind(this))
