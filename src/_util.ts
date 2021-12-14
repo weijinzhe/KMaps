@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-22 16:20:15
  * @LastEditors: wjz
- * @LastEditTime: 2021-12-01 15:55:06
+ * @LastEditTime: 2021-12-14 17:13:24
  * @FilePath: /kmaps/src/_util.ts
  */
 import Hammers from './js/hammer-konva.js'
@@ -230,7 +230,7 @@ export function wheelEvent(target:Node,callBack:Function) {
   }
 
 
-export function colorRgba(sHex:any, alpha:number = 1){
+export function colorHextoRGBA(sHex:any, alpha:number = 1){
   // 十六进制颜色值的正则表达式
   var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/
   /* 16进制颜色转为RGB格式 */
@@ -256,3 +256,14 @@ export function colorRgba(sHex:any, alpha:number = 1){
   }
 }
   
+export function colorRGBtoHex(color:any) {
+  if(color.charAt(0) == '#'){
+    return color
+  }
+  var rgb = color.split(',');
+  var r = parseInt(rgb[0].split('(')[1]);
+  var g = parseInt(rgb[1]);
+  var b = parseInt(rgb[2].split(')')[0]);
+  var hex = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+  return hex;
+}

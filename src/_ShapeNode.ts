@@ -3,14 +3,14 @@
  * @Author: wjz
  * @Date: 2021-11-18 10:08:49
  * @LastEditors: wjz
- * @LastEditTime: 2021-12-03 17:21:45
+ * @LastEditTime: 2021-12-14 17:18:28
  * @FilePath: /kmaps/src/_ShapeNode.ts
  */
 
 import Konva from "./js/konva.min";
 
 
-import { wheelEvent, colorRgba } from './_util'
+import { wheelEvent, colorHextoRGBA ,colorRGBtoHex} from './_util'
 
 import Hammer from "./js/hammer-konva"
 
@@ -19,9 +19,12 @@ interface attrs {
   name?: string,
   points: [[number, number], [number, number]]
   color: string,
+  dash?:Array<number>,
+  colorOpacity?:number,
   strokeWidth?: number,
   hitStrokeWidth?: number,
-  draggable?:boolean
+  draggable?:boolean,
+  anchor?:boolean //是否绘制拖拽锚点 默认为true
 }
 
 
@@ -38,9 +41,12 @@ export default class ShapeNode extends Konva.Group {
     }
     this._stage = window["_KMap"]["_Stage"]  //(window as any)._KMap_Stage
     this._lineFun(attrs)
-    attrs.points.forEach((_item: any, _index: any, _array: any) => {
-      this._circleFun({ x: _item[0], y: _item[1] }, _index)
-    });
+    if(attrs['anchor'] !== false){
+      attrs.points.forEach((_item: any, _index: any, _array: any) => {
+        this._circleFun({ x: _item[0], y: _item[1] }, _index)
+      });
+    }
+    
     let self: any = this
 
     let hammer = new Hammer(self, { //绑定事件
@@ -54,17 +60,19 @@ export default class ShapeNode extends Konva.Group {
   }
   _lineFun(attrs: any) {
     let scale = this._stage.scale()
-    let rgb = attrs.color ? colorRgba(attrs.color, 0.5) : ""
+    // let rgb = attrs.color ? colorHextoRGBA(attrs.color, 0.5) : ""
     let _points = this._pointsArray(attrs.points)
+    
     let _line = new Konva.Line({
       id: `_line`,
       name: "_line",
       points: _points,
       closed: attrs.closed,
-      stroke: attrs.color,
-      fill: rgb,
+      stroke: colorRGBtoHex(attrs.color), // rgb转16位颜色值
+      fill: attrs.color,//rgb,
       strokeWidth: (attrs.strokeWidth|| 1 ) / scale.x,
-      hitStrokeWidth: 20, //自定义图形选取范围 
+      hitStrokeWidth: attrs.hitStrokeWidth || 20, //自定义图形选取范围 
+      dash:attrs.dash,
     })
     this.add(_line)
     this._line = _line
@@ -82,7 +90,7 @@ export default class ShapeNode extends Konva.Group {
       fill: 'rgba(255,255,255,0.6)',
       stroke: '#00aaff',
       strokeWidth: 2,
-      hitStrokeWidth: 20, //自定义图形选取范围 
+      hitStrokeWidth: this.attrs.hitStrokeWidth || 20, //自定义图形选取范围 
       visible: super.draggable() || false, //默认显示状态
       draggable: true,
     })

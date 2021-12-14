@@ -3,7 +3,7 @@
  * @Author: wjz
  * @Date: 2021-11-18 10:08:49
  * @LastEditors: wjz
- * @LastEditTime: 2021-12-06 15:18:48
+ * @LastEditTime: 2021-12-14 16:29:13
  * @FilePath: /kmaps/src/Line.ts
  */
 
@@ -11,7 +11,7 @@
 
 import ShapeNode from './_ShapeNode'
 
-import { wheelEvent , colorRgba} from './_util'
+import { wheelEvent , colorHextoRGBA} from './_util'
 
 interface attrs {
   id: string,

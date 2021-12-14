@@ -21,6 +21,7 @@
     "watch": "rollup -c -w",
     "rollup": "rollup -c",
     "build-min":"gulp build-min",
+    "build":"rollup -c && gulp build-min",
     "tsc": "gulp tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

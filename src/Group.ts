@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-11-12 11:02:13
  * @LastEditors: wjz
- * @LastEditTime: 2021-12-14 11:04:54
+ * @LastEditTime: 2021-12-14 15:04:30
  * @FilePath: /kmaps/src/Group.ts
  */
 import Konva from "./js/konva.min.js"

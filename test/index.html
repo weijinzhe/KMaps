@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-19 20:35:58
  * @LastEditors: wjz
- * @LastEditTime: 2021-12-14 11:10:02
+ * @LastEditTime: 2021-12-14 17:19:35
  * @FilePath: /kmaps/test/index.html
 -->
 <!DOCTYPE html>
@@ -181,8 +181,10 @@
     let polygon = new KMaps.Polygon({
       id: "bbb",
       points: [[200, 200], [500, 200],[500,500],[200,500]],
-      color:"#fc0a07",
-      absoluteSize:false,
+      color:KMaps.Util.colorHextoRGBA("#fc000d",0.4),
+      absoluteSize:true,
+      anchor:true,
+      // dash:[20,20]
     })
     shapeGroup.add(polygon)
 

@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-21 15:30:30
  * @LastEditors: wjz
- * @LastEditTime: 2021-12-03 11:21:04
+ * @LastEditTime: 2021-12-14 16:29:03
  * @FilePath: /kmaps/src/index.ts
  */
 import Konva from './js/konva.min.js'
@@ -13,7 +13,7 @@ window["_KMap"]["_BaseMap_unpdata"] = [] //地图图片更新
 
 import Hammer from "./js/hammer-konva";
 
-import*as Util from "./_util"
+import {wheelEvent,colorHextoRGBA} from "./_util"
 
 import Stage from './Stage'
 import Layer from './Layer'
@@ -31,7 +31,10 @@ import Circle from './Circle';
 export default {
     Konva,
     Hammer,
-    Util,
+    Util:{
+        wheelEvent,
+        colorHextoRGBA,
+    },
     Stage, //舞台
     Layer, //底层 图层
     Group,
