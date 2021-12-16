@@ -3,7 +3,7 @@
  * @Author: wjz
  * @Date: 2021-11-18 10:08:49
  * @LastEditors: wjz
- * @LastEditTime: 2021-12-14 17:18:28
+ * @LastEditTime: 2021-12-15 11:35:20
  * @FilePath: /kmaps/src/_ShapeNode.ts
  */
 
@@ -71,7 +71,7 @@ export default class ShapeNode extends Konva.Group {
       stroke: colorRGBtoHex(attrs.color), // rgb转16位颜色值
       fill: attrs.color,//rgb,
       strokeWidth: (attrs.strokeWidth|| 1 ) / scale.x,
-      hitStrokeWidth: attrs.hitStrokeWidth || 20, //自定义图形选取范围 
+      hitStrokeWidth: attrs.hitStrokeWidth, //自定义图形选取范围 
       dash:attrs.dash,
     })
     this.add(_line)
@@ -90,7 +90,7 @@ export default class ShapeNode extends Konva.Group {
       fill: 'rgba(255,255,255,0.6)',
       stroke: '#00aaff',
       strokeWidth: 2,
-      hitStrokeWidth: this.attrs.hitStrokeWidth || 20, //自定义图形选取范围 
+      hitStrokeWidth: this.attrs.hitStrokeWidth, //自定义图形选取范围 
       visible: super.draggable() || false, //默认显示状态
       draggable: true,
     })
