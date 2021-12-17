@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-11-22 16:45:13
  * @LastEditors: wjz
- * @LastEditTime: 2021-12-06 15:20:31
+ * @LastEditTime: 2021-12-17 16:52:15
  * @FilePath: /kmaps/src/Circle.ts
  */
 import konvaMin from "./js/konva.min";
@@ -53,7 +53,7 @@ export default class Circle extends Konva.Circle {
         scale_event()
       }
     })
-
+    scale_event()
     async function scale_event() {
       let scale = _stage.scaleX()
       self.scale({
