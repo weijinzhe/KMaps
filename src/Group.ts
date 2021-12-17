@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-11-12 11:02:13
  * @LastEditors: wjz
- * @LastEditTime: 2021-12-14 15:04:30
+ * @LastEditTime: 2021-12-17 23:30:53
  * @FilePath: /kmaps/src/Group.ts
  */
 import Konva from "./js/konva.min.js"
@@ -21,11 +21,16 @@ export default class Group extends Konva.Group {
     super(attrs)
     if(attrs["awaitMap"]){
       window["_KMap"]["_BaseMap_unpdata"].push(this._position.bind(this))
+      if(attrs.visible !== false){return}
       this.visible(false)
     }
   }
   async _position(map){
-    this.visible(true)
+    if(this.attrs.visible !== false){
+      this.visible(true)
+      this.attrs.visible = true
+    }
+
     if(!this.attrs.awaitMap){return}
     let {x,y} = map.attrs
     this.position({x,y})

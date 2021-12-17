@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-11-22 16:45:13
  * @LastEditors: wjz
- * @LastEditTime: 2021-12-17 16:52:15
+ * @LastEditTime: 2021-12-17 20:56:05
  * @FilePath: /kmaps/src/Circle.ts
  */
 import konvaMin from "./js/konva.min";
