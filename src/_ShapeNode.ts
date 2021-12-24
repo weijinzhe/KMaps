@@ -3,7 +3,7 @@
  * @Author: wjz
  * @Date: 2021-11-18 10:08:49
  * @LastEditors: wjz
- * @LastEditTime: 2021-12-15 11:35:20
+ * @LastEditTime: 2021-12-20 16:14:41
  * @FilePath: /kmaps/src/_ShapeNode.ts
  */
 
@@ -94,9 +94,18 @@ export default class ShapeNode extends Konva.Group {
       visible: super.draggable() || false, //默认显示状态
       draggable: true,
     })
-    this.add(_anchor)
 
+  //  let _anchorProxy =  new Proxy(_anchor,{ 
+  //     set: function (target, propKey, value, receiver) {
+        
+  //       console.log('改变了');
+        
+  //       return Reflect.set(target, propKey, value, receiver);
+  //     },
+  //   })
+    this.add(_anchor)
     _anchor.on("dragmove", function (e: any) {
+      // console.log(this.attrs.x);
       e.cancelBubble = true;
       let points = [] //拖拽锚点当前坐标
       let anchorArr = self.find("._drag_anchor")
@@ -105,7 +114,10 @@ export default class ShapeNode extends Konva.Group {
         points.push(x, y)
       }
       self._line.points(points)
+    
     })
+    
+    
   }
   /**
    * @description 获取或设置图形可拖拽状态
