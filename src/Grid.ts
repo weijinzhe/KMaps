@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-29 09:54:14
  * @LastEditors: wjz
- * @LastEditTime: 2021-12-01 15:32:00
+ * @LastEditTime: 2021-12-27 13:58:33
  * @FilePath: /kmaps/src/Grid.ts
  */
 import Konva from "./js/konva.min.js"
@@ -38,6 +38,8 @@ export default class Grid extends Konva.Group {
       if(_stage == null){ throw new Error("The stage node was not obtained"); return}
       let sizeW = _stage.width(),
         sizeH = _stage.height();
+      let strokeWidth = this.attrs.lineWidth || 0.1
+      let color = this.attrs.color || "#000000"
       let self = this
       let size = this.attrs.grid || 50
       let stagePos = _stage.absolutePosition() //舞台位置 .起始绘制点
@@ -56,8 +58,8 @@ export default class Grid extends Konva.Group {
           points: [0 - stagePos.x - 0.5, (0 - stagePos.y) + size * xc - 0.5, startPoint.x - 0.5, (0 -
             stagePos
             .y) + size * xc - 0.5], //-0.5为了使线绘制在像素点正中心，防止模糊
-          stroke: "#000000",
-          strokeWidth: 0.1,
+          stroke: color,
+          strokeWidth: strokeWidth,
         })
         this.add(levelLine)
       }
@@ -67,8 +69,8 @@ export default class Grid extends Konva.Group {
           points: [size * yc - 0.5, 0 - stagePos.y - 0.5, size * yc - 0.5, startPoint.y -
             0.5
           ],
-          stroke: "#000000",
-          strokeWidth: 0.1,
+          stroke: color,
+          strokeWidth: strokeWidth,
         })
         this.add(verticalLine)
       }
