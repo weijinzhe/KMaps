@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-19 20:35:58
  * @LastEditors: wjz
- * @LastEditTime: 2021-12-14 17:19:35
+ * @LastEditTime: 2022-01-11 19:40:52
  * @FilePath: /kmaps/test/index.html
 -->
 <!DOCTYPE html>
@@ -74,7 +74,8 @@
     let loc = new KMaps.Location()
     locationGroup.add(loc)
     let track = new KMaps.Track({
-      pixelRatio:2
+      pixelRatio:2,
+      strokeWidth:5,
     })
     trackGroup.add(track)
 
@@ -96,14 +97,15 @@
       let y = Math.floor(Math.random() * this.height);
       // console.log(x);
 
-      // track.drawing({
-      //   strokeWidth:5,
-      //   strokeStyle:"rgba(254, 0, 0, 1)",
-      //   move:move,
-      //   line:[x,y]
-      // })
-      // move = [x,y]
-      // baseLayer.batchDraw() //刷新画布区域
+      track.drawing({
+        strokeWidth:5,
+        strokeStyle:"rgba(254, 0, 0, 1)",
+        move:move,
+        line:[x,y]
+      })
+      move = [x,y]
+      loc.location({ x, y, angle: 90 })
+      baseLayer.batchDraw() //刷新画布区域
     },1000)
       // this.visible(false)
     }

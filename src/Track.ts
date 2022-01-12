@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-11-15 13:36:06
  * @LastEditors: wjz
- * @LastEditTime: 2021-12-14 11:00:35
+ * @LastEditTime: 2022-01-12 10:34:58
  * @FilePath: /kmaps/src/Track.ts
  */
 import Konva from "./js/konva.min.js"
@@ -61,16 +61,16 @@ interface attrs  {
     this._bufferCanvas.height = map.height() * attrs.pixelRatio;
     this._bufferContext = this._bufferCanvas.getContext('2d');
     // this.position(map.position())
+    this._bufferContext.lineWidth = attrs.strokeWidth * attrs.pixelRatio || 1; //放大绘制图形坐标 ，图片质量更高 
+    this._bufferContext.lineJoin = 'round';
 
     this._image = new Konva.Image({
       id:"trackImage",
       image: this._bufferCanvas,
       x:0,y:0,
       scale:{x:1/attrs.pixelRatio,y:1/attrs.pixelRatio},
-      // stroke:"#f50015",
-      // strokeWidth:5
     })
-    this.add(this._image); 
+    this.add(this._image);  
   
     // //零点准星
     // let xline = new Konva.Line({
@@ -108,19 +108,23 @@ interface attrs  {
 
     // // 将渐变赋值给线的样式
     // this._bufferContext.strokeStyle=grd;
-    
-    
-    this._bufferContext.beginPath();
-    this._bufferContext.lineWidth = param.strokeWidth * attrs.pixelRatio;
-    this._bufferContext.lineJoin = 'round';
+    // this._bufferContext.scale(1/attrs.pixelRatio,1/attrs.pixelRatio); //缩小绘制图形 与画布同比例 （高质量，但尺寸不变）。
     this._bufferContext.globalCompositeOperation = 'source-over';
-    this._bufferContext.strokeStyle = param.strokeStyle || '';
+
+    this._bufferContext.beginPath();
     
+    this._bufferContext.strokeStyle = param.strokeStyle || '';
+    // this._bufferContext.moveTo(param.move[0],param.move[1])
+    
+    // this._bufferContext.lineTo(param.line[0],param.line[1]);
     this._bufferContext.moveTo(param.move[0]* attrs.pixelRatio,param.move[1]* attrs.pixelRatio)
     
     this._bufferContext.lineTo(param.line[0]* attrs.pixelRatio,param.line[1]* attrs.pixelRatio);
     this._bufferContext.closePath();
     this._bufferContext.stroke();
+
+    // this._bufferContext.scale(attrs.pixelRatio,attrs.pixelRatio); //缩小绘制图形 与画布同比例 （高质量，但尺寸不变）
+
   }
 }
 
