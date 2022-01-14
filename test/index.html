@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-19 20:35:58
  * @LastEditors: wjz
- * @LastEditTime: 2022-01-11 19:40:52
+ * @LastEditTime: 2022-01-13 21:09:27
  * @FilePath: /kmaps/test/index.html
 -->
 <!DOCTYPE html>
@@ -74,14 +74,15 @@
     let loc = new KMaps.Location()
     locationGroup.add(loc)
     let track = new KMaps.Track({
-      pixelRatio:2,
+      // pixelRatio:4,
+      stroke:"#df4b26",
       strokeWidth:5,
     })
     trackGroup.add(track)
 
     baseLayer.add(baseMap, pathGroup,trackGroup, grid, shapeGroup,circleGroup, locationGroup)
 
-
+    
     //加载图片
     let image = new Image()
     image.onload = async function () {
@@ -92,17 +93,19 @@
       //   pixelRatio: 2
       // })
       console.log(this.width);
+      track.moveTo({x:200,y:200})
       setInterval(()=> {
       let x = Math.floor(Math.random() * this.width);
       let y = Math.floor(Math.random() * this.height);
       // console.log(x);
 
-      track.drawing({
-        strokeWidth:5,
-        strokeStyle:"rgba(254, 0, 0, 1)",
-        move:move,
-        line:[x,y]
-      })
+      // track.drawing({
+      //   strokeWidth:5,
+      //   strokeStyle:"rgba(254, 0, 0, 1)",
+      //   move:move,
+      //   line:[x,y]
+      // })
+      track.lineTo({x,y})
       move = [x,y]
       loc.location({ x, y, angle: 90 })
       baseLayer.batchDraw() //刷新画布区域
