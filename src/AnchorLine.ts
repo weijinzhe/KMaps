@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2022-02-09 14:26:02
  * @LastEditors: wjz
- * @LastEditTime: 2022-02-09 15:46:41
+ * @LastEditTime: 2022-02-09 16:35:05
  * @FilePath: /kmaps/src/anchorLine.ts
  */
 
@@ -28,7 +28,6 @@ interface attrs {
   color: string, //颜色
   dash?:Array<number>, // 虚线数组 详情参照konva.Line
   closed?:boolean, //是否闭合图形
-  colorOpacity?:number,//颜色透明度
   strokeWidth?: number, //画笔宽度
   hitStrokeWidth?: number, // 点击识别范围
   draggable?:boolean, //是否可拖拽
@@ -38,10 +37,23 @@ interface attrs {
 
 
 /**
- * @description 
+ * @description 带有拖拽锚点的 Line 允许闭合为多边形
+ * @param {String} id id
+ * @param {String} name name
+ * @param {Array} points 坐标点数据
+ * @param {String} color 颜色
+ * @param {Array} dash  虚线数组 详情参照konva.Line
+ * @param {Boolean} closed 是否闭合图形
+ * @param {Number} strokeWidth 画笔宽度
+ * @param {Number} hitStrokeWidth 点击识别范围
+ * @param {Boolean} draggable 是否可拖拽
+ * @param {Boolean} anchor 是否绘制拖拽锚点 默认为true
+ * @param {Boolean} absoluteSize 绝对尺寸，与舞台一同缩放 默认true
+ * 
  */
 export default class AnchorLine extends Konva.Group {
   constructor(attrs: attrs) {
+    attrs["absoluteSize"] ? null : attrs["absoluteSize"] = false //绝对尺寸，与舞台一同缩放
     super(attrs)
     if(attrs.draggable){
       this.on("dragstart.—custom dragmove.—custom dragend.—custom touchstart.—custom touchmove.—custom touchend.—custom", function (e: any) {
@@ -70,11 +82,13 @@ export default class AnchorLine extends Konva.Group {
     this._stage.addEventListener("scaleend setscale", function (e:any) {
       e.cancelBubble = true;
       let scale = self._stage.scaleX()
-      if(self.attrs.closed){ //多边闭合图形
-        self._line.strokeWidth(self._strokeWidth / scale) //缩放边缘线宽度
-      }else{ // 线不闭合
-        self._line.strokeWidth(4 / scale) //缩放线宽度
-        self._line.hitStrokeWidth(20 / scale) //缩放点击识别范围
+      if(self.attrs.absoluteSize){
+        if(self.attrs.closed){ //多边闭合图形
+          self._line.strokeWidth(self._strokeWidth / scale) //缩放边缘线宽度
+        }else{ // 线不闭合
+          self._line.strokeWidth(4 / scale) //缩放线宽度
+          self._line.hitStrokeWidth(20 / scale) //缩放点击识别范围
+        }
       }
       
       //获取拖拽锚点
