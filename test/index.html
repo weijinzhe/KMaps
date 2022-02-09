@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-19 20:35:58
  * @LastEditors: wjz
- * @LastEditTime: 2022-01-13 21:09:27
+ * @LastEditTime: 2022-02-09 15:52:59
  * @FilePath: /kmaps/test/index.html
 -->
 <!DOCTYPE html>
@@ -92,8 +92,8 @@
       //   quality: 1,
       //   pixelRatio: 2
       // })
-      console.log(this.width);
-      track.moveTo({x:200,y:200})
+      // console.log(this.width);
+      // track.moveTo({x:200,y:200})
       setInterval(()=> {
       let x = Math.floor(Math.random() * this.width);
       let y = Math.floor(Math.random() * this.height);
@@ -105,10 +105,10 @@
       //   move:move,
       //   line:[x,y]
       // })
-      track.lineTo({x,y})
+      // track.lineTo({x,y})
       move = [x,y]
-      loc.location({ x, y, angle: 90 })
-      baseLayer.batchDraw() //刷新画布区域
+      // loc.location({ x, y, angle: 90 })
+      // baseLayer.batchDraw() //刷新画布区域
     },1000)
       // this.visible(false)
     }
@@ -171,7 +171,7 @@
       hitStrokeWidth:20,
       absoluteSize:false
     })
-    shapeGroup.add(Line)
+    // shapeGroup.add(Line)
 
     var targetShape = null
     Line.on("click touchend", function (e) {
@@ -191,11 +191,7 @@
       anchor:true,
       // dash:[20,20]
     })
-    shapeGroup.add(polygon)
-
-    // shapeGroup.add(as)
-    // polygon.resetNode(as)
-
+    // shapeGroup.add(polygon)
     polygon.on("click touchend", function (e) {
       e.cancelBubble = true;
       // if(!this.draggable()){
@@ -204,6 +200,48 @@
       // }
       targetShape = this
     })
+    // 锚点拖拽线 封装
+    let anchor_Line = new KMaps.AnchorLine({
+      id: "aaa",
+      points: [[100, 200], [500, 500]],
+      color:"#fc0a07",
+      strokeWidth:3,
+      hitStrokeWidth:20,
+      absoluteSize:false,
+      anchor:true,
+      // draggable:true
+    })
+
+    shapeGroup.add(anchor_Line)
+    anchor_Line.on("click touchend ", function (e) {
+      console.log(e);
+      e.cancelBubble = true;
+      // if(!this.draggable()){
+      this.draggable(true)
+      // }
+      targetShape = this
+    })
+    let anchor_Polygon = new KMaps.AnchorLine({
+      id: "bbb",
+      points: [[200, 200], [500, 200],[500,500],[200,500]],
+      color:KMaps.Util.colorHextoRGBA("#fc000d",0.4),
+      absoluteSize:true,
+      anchor:true,
+      closed:true,
+      // draggable:false
+    })
+    shapeGroup.add(anchor_Polygon)
+    anchor_Polygon.on("click touchend", function (e) {
+      e.cancelBubble = true;
+      if(!this.draggable()){
+        this.draggable(true)
+      }else{
+        this.draggable(false)
+      }
+      targetShape = this
+    })
+
+    
 
 
     // let ass = g.clone()
@@ -223,13 +261,6 @@
         shapeGroup.visible(false)
       }
     })
-    // KMaps.Util.wheelEvent(stage, (e) => {
-    //   if (e.type == "wheelend") {
-    //     shapeGroup.visible(true)
-    //   } else {
-    //     shapeGroup.visible(false)
-    //   }
-    // })
     let circle = new KMaps.Circle({
       x:100,
       y:100,
@@ -240,7 +271,10 @@
       absoluteSize:false
     })
     circleGroup.add(circle)
+    
 
+    
+    //   手动选取区域 点击位置框选
 
   </script>
 </body>

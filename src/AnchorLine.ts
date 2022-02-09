@@ -1,3 +1,10 @@
+/*
+ * @Author: wjz
+ * @Date: 2022-02-09 14:26:02
+ * @LastEditors: wjz
+ * @LastEditTime: 2022-02-09 15:46:41
+ * @FilePath: /kmaps/src/anchorLine.ts
+ */
 
 /*
  * @Author: wjz
@@ -19,19 +26,21 @@ interface attrs {
   name?: string, //名字
   points: [[number, number], [number, number]] //坐标点数据
   color: string, //颜色
-  dash?:Array<number>, //
+  dash?:Array<number>, // 虚线数组 详情参照konva.Line
+  closed?:boolean, //是否闭合图形
   colorOpacity?:number,//颜色透明度
   strokeWidth?: number, //画笔宽度
   hitStrokeWidth?: number, // 点击识别范围
   draggable?:boolean, //是否可拖拽
   anchor?:boolean //是否绘制拖拽锚点 默认为true
+  absoluteSize?:boolean //绝对尺寸，不与舞台一同缩放 默认false
 }
 
 
 /**
  * @description 
  */
-export default class ShapeNode extends Konva.Group {
+export default class AnchorLine extends Konva.Group {
   constructor(attrs: attrs) {
     super(attrs)
     if(attrs.draggable){
@@ -57,6 +66,26 @@ export default class ShapeNode extends Konva.Group {
         }]
       ]
     });
+    //缩放事件监听
+    this._stage.addEventListener("scaleend setscale", function (e:any) {
+      e.cancelBubble = true;
+      let scale = self._stage.scaleX()
+      if(self.attrs.closed){ //多边闭合图形
+        self._line.strokeWidth(self._strokeWidth / scale) //缩放边缘线宽度
+      }else{ // 线不闭合
+        self._line.strokeWidth(4 / scale) //缩放线宽度
+        self._line.hitStrokeWidth(20 / scale) //缩放点击识别范围
+      }
+      
+      //获取拖拽锚点
+      let anchorArr = self.find("._drag_anchor")
+      for(let item of anchorArr){ //缩放锚点大小
+        item.scale({
+          x: 1 / scale,
+          y: 1 / scale
+        })
+      }
+    })
   }
   _lineFun(attrs: any) {
     let scale = this._stage.scale()
@@ -76,7 +105,6 @@ export default class ShapeNode extends Konva.Group {
     })
     this.add(_line)
     this._line = _line
-
   }
   _circleFun({ x, y }, index: number) {
     let scale = this._stage.scale()
