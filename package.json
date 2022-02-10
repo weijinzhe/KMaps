@@ -1,6 +1,6 @@
 {
   "name": "kmap-ts",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "基于konva库、ts封装的非地理坐标地图库",
   "author": "wjz",
   "license": "ISC",

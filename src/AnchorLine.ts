@@ -53,6 +53,9 @@ interface attrs {
  * @param {Boolean} anchorVisible 拖拽锚点是否显示默认 false, anchor 为true时有效 仅初始化时可设置
  * 
  * @param {Boolean} absoluteSize 绝对尺寸，与舞台一同缩放 默认true 仅初始化时可设置
+ * 
+ * @example 
+ * let node = new KMaps.AnchorLine({...})
  */
 export default class AnchorLine extends Konva.Group {
   constructor(attrs: attrs) {
