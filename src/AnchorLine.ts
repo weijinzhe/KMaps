@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2022-02-09 14:26:02
  * @LastEditors: wjz
- * @LastEditTime: 2022-02-09 16:35:05
+ * @LastEditTime: 2022-02-10 13:50:55
  * @FilePath: /kmaps/src/anchorLine.ts
  */
 
@@ -32,6 +32,8 @@ interface attrs {
   hitStrokeWidth?: number, // 点击识别范围
   draggable?:boolean, //是否可拖拽
   anchor?:boolean //是否绘制拖拽锚点 默认为true
+  anchorVisible?:boolean, //拖拽锚点是否显示默认 false, anchor 为true时有效
+
   absoluteSize?:boolean //绝对尺寸，不与舞台一同缩放 默认false
 }
 
@@ -41,25 +43,26 @@ interface attrs {
  * @param {String} id id
  * @param {String} name name
  * @param {Array} points 坐标点数据
- * @param {String} color 颜色
- * @param {Array} dash  虚线数组 详情参照konva.Line
- * @param {Boolean} closed 是否闭合图形
- * @param {Number} strokeWidth 画笔宽度
- * @param {Number} hitStrokeWidth 点击识别范围
- * @param {Boolean} draggable 是否可拖拽
- * @param {Boolean} anchor 是否绘制拖拽锚点 默认为true
- * @param {Boolean} absoluteSize 绝对尺寸，与舞台一同缩放 默认true
+ * @param {String} color 颜色 仅初始化时可设置
+ * @param {Array} dash  虚线数组 详情参照konva.Line 仅初始化时可设置
+ * @param {Boolean} closed 是否闭合图形 仅初始化时可设置
+ * @param {Number} strokeWidth 画笔宽度 仅初始化时可设置
+ * @param {Number} hitStrokeWidth 点击识别范围 仅初始化时可设置
+ * @param {Boolean} draggable 是否可拖拽 
+ * @param {Boolean} anchor 是否绘制拖拽锚点 默认为true 仅初始化时可设置
+ * @param {Boolean} anchorVisible 拖拽锚点是否显示默认 false, anchor 为true时有效 仅初始化时可设置
  * 
+ * @param {Boolean} absoluteSize 绝对尺寸，与舞台一同缩放 默认true 仅初始化时可设置
  */
 export default class AnchorLine extends Konva.Group {
   constructor(attrs: attrs) {
-    attrs["absoluteSize"] ? null : attrs["absoluteSize"] = false //绝对尺寸，与舞台一同缩放
+    attrs["absoluteSize"] == false ? null : attrs["absoluteSize"] = true //绝对尺寸，与舞台一同缩放
     super(attrs)
-    if(attrs.draggable){
+    // if(attrs.draggable){
       this.on("dragstart.—custom dragmove.—custom dragend.—custom touchstart.—custom touchmove.—custom touchend.—custom", function (e: any) {
         e.cancelBubble = true;//阻止事件冒泡
       })
-    }
+    // }
     this._stage = window["_KMap"]["_Stage"]  //(window as any)._KMap_Stage
     this._lineFun(attrs)
     if(attrs['anchor'] !== false){
@@ -133,7 +136,7 @@ export default class AnchorLine extends Konva.Group {
       stroke: '#00aaff',
       strokeWidth: 2,
       hitStrokeWidth: this.attrs.hitStrokeWidth, //自定义图形选取范围 
-      visible: super.draggable() || false, //默认显示状态
+      visible: this.attrs.anchorVisible || false,//super.draggable() || false, //默认显示状态
       draggable: true,
     })
 
@@ -158,9 +161,8 @@ export default class AnchorLine extends Konva.Group {
       self._line.points(points)
     
     })
-    
-    
   }
+  
   /**
    * @description 获取或设置图形可拖拽状态
    * @param {boolean} param 可拖拽状态
@@ -168,10 +170,10 @@ export default class AnchorLine extends Konva.Group {
   draggable(param: boolean) {
     if (!arguments.length) { return super.draggable() }
     super.draggable(param)
-    let anchorArr = this.find("._drag_anchor")
-    for (let item of anchorArr) {
-      item.visible(param)
-    }
+    // let anchorArr = this.find("._drag_anchor")
+    // for (let item of anchorArr) {
+    //   item.visible(param)
+    // }
     //防止事件冒泡，提前阻止，拖拽关闭后 移除
     if (param) {
       this.on("dragstart.—custom dragmove.—custom dragend.—custom touchstart.—custom touchmove.—custom touchend.—custom", function (e: any) {
@@ -179,6 +181,53 @@ export default class AnchorLine extends Konva.Group {
       })
     } else {
       this.off("dragstart.—custom dragmove.—custom dragend.—custom touchstart.—custom touchmove.—custom touchend.—custom")
+    }
+    return param
+  }
+  /**
+   * @description 添加点，折线端点 拖拽锚点
+   * @param {Array} points 点坐标数组 [x,y] 一次只能添加一个点
+   * @returns {Object} this 返回更新后的对象本身
+   */
+   addPoints(points:[number,number]){
+    //添加拖拽锚点
+    let index  = this.find("._drag_anchor").length - 1 || 0 //锚点序号index
+    this._circleFun({x:points[0],y:points[1]},index)
+    if(!this.attrs.anchor){return}
+    let line = this._line.points()
+    line.push(points[0],points[1])
+    this._line.points(line)
+    return this
+  }
+  /**
+   * @description 移除点，线端点 拖拽锚点
+   * @param {Array} index 移除的目标点 数组下标位置 index
+   * @returns {Object} this 返回更新后的对象本身
+   */
+  removePoints(index){
+    let points = this.getPoints() //获取当前锚点坐标数据
+    points.splice(index,1)
+    this._line.points(this._pointsArray(points))
+    //获取需要移除的锚点对象
+    let anchor = this.findOne(`#_drag_anchor-${index}`)
+    console.log(anchor.position(),points)
+    
+    //销毁目标锚点
+    if(anchor){anchor.destroy() }
+    return this
+  }
+
+  /**
+   * @description 锚点显示状态 anchor 为ture 可用
+   * @param {boolean} param 显示状态
+   * @returns {boolean} anchorVisible 锚点显示状态
+   */
+  anchorVisible(param: boolean){
+    if (!arguments.length) { return this.attrs.anchorVisible }
+    this.attrs.anchorVisible = param
+    let anchorArr = this.find("._drag_anchor")
+    for (let item of anchorArr) {
+      item.visible(param)
     }
     return param
   }

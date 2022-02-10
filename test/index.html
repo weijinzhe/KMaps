@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-19 20:35:58
  * @LastEditors: wjz
- * @LastEditTime: 2022-02-09 16:33:37
+ * @LastEditTime: 2022-02-10 13:51:08
  * @FilePath: /kmaps/test/index.html
 -->
 <!DOCTYPE html>
@@ -82,7 +82,17 @@
 
     baseLayer.add(baseMap, pathGroup,trackGroup, grid, shapeGroup,circleGroup, locationGroup)
 
-    
+    //拖拽 缩放隐藏元素 提高性能
+    stage.on("dragstart dragend scalestart scaleend", function (e) {
+      e.cancelBubble = true;
+      if (e.type == "dragend" || e.type =="scaleend") {
+        shapeGroup.visible(true)
+      } else if(e.type == "dragstart" || e.type =="scalestart") {
+        shapeGroup.visible(false)
+      }
+    })
+
+
     //加载图片
     let image = new Image()
     image.onload = async function () {
@@ -163,7 +173,7 @@
 
     //http://192.168.1.10:62002/api/map/area/edges?map=613715e5fee0c72a632453cb&map_areas=
 
-    let Line = new KMaps.Line({
+    /* let Line = new KMaps.Line({
       id: "aaa",
       points: [[100, 200], [500, 500]],
       color:"#fc0a07",
@@ -182,8 +192,8 @@
       console.log("11", this.getPoints());
       // }
       targetShape = this
-    })
-    let polygon = new KMaps.Polygon({
+    }) */
+    /* let polygon = new KMaps.Polygon({
       id: "bbb",
       points: [[200, 200], [500, 200],[500,500],[200,500]],
       color:KMaps.Util.colorHextoRGBA("#fc000d",0.4),
@@ -199,7 +209,7 @@
       // console.log(this.getPoints());
       // }
       targetShape = this
-    })
+    }) */
     // 锚点拖拽线 封装
     let anchor_Line = new KMaps.AnchorLine({
       id: "aaa",
@@ -207,9 +217,10 @@
       color:"#fc0a07",
       strokeWidth:3,
       hitStrokeWidth:20,
-      absoluteSize:true,
+      // absoluteSize:true, 
       anchor:true,
-      // draggable:true
+      // anchorVisible:true,
+      draggable:false
     })
 
     shapeGroup.add(anchor_Line)
@@ -217,10 +228,17 @@
       console.log(e);
       e.cancelBubble = true;
       // if(!this.draggable()){
-      this.draggable(true)
-      // }
+        if(!this.draggable()){
+        this.draggable(true)
+        this.anchorVisible(true)
+      }else{
+        this.draggable(false)
+        this.anchorVisible(false)
+      }
       targetShape = this
     })
+    anchor_Line.addPoints([0,0]) //添加锚点
+    // anchor_Line.removePoints(0) //删除节点
     let anchor_Polygon = new KMaps.AnchorLine({
       id: "bbb",
       points: [[200, 200], [500, 200],[500,500],[200,500]],
@@ -235,13 +253,13 @@
       e.cancelBubble = true;
       if(!this.draggable()){
         this.draggable(true)
+        this.anchorVisible(true)
       }else{
         this.draggable(false)
+        this.anchorVisible(false)
       }
       targetShape = this
     })
-
-    
 
 
     // let ass = g.clone()
@@ -253,14 +271,7 @@
       console.log(targetShape.getPoints());
     })
 
-    stage.on("dragstart dragend scalestart scaleend", function (e) {
-      e.cancelBubble = true;
-      if (e.type == "dragend" || e.type =="scaleend") {
-        shapeGroup.visible(true)
-      } else if(e.type == "dragstart" || e.type =="scalestart") {
-        shapeGroup.visible(false)
-      }
-    })
+    
     let circle = new KMaps.Circle({
       x:100,
       y:100,
