@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-19 20:35:58
  * @LastEditors: wjz
- * @LastEditTime: 2022-02-14 11:50:45
+ * @LastEditTime: 2022-02-14 13:52:30
  * @FilePath: /kmaps/test/index.html
 -->
 <!DOCTYPE html>
@@ -247,7 +247,7 @@
       hitStrokeWidth:20,
       // absoluteSize:true, 
       // anchor:true,
-      // anchorVisible:true,
+      anchorVisible:true,
       draggable:false
     })
 
@@ -260,17 +260,20 @@
         if(!this.draggable()){
         this.draggable(true)
         // this.anchorVisible(true)
+    anchor_Line.removePoints(2) //添加锚点
+
       }else{
         this.draggable(false)
         // this.anchorVisible(false)
       }
       targetShape = this
     })
-    // anchor_Line.addPoints([0,0]) //添加锚点
+    anchor_Line.addPoints([500,0]) //添加锚点
+
     // anchor_Line.removePoints(0) //删除节点
     let anchor_Polygon = new KMaps.AnchorLine({
       id: "bbb",
-      points: [[200, 200], [500, 200],[500,500],[200,500]],
+      // points: [[200, 200], [500, 200],[500,500],[200,500]],
       stroke:'#fc000d',
       strokeWidth:2,
       // absoluteSize:false,

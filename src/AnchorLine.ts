@@ -2,17 +2,10 @@
  * @Author: wjz
  * @Date: 2022-02-09 14:26:02
  * @LastEditors: wjz
- * @LastEditTime: 2022-02-14 11:50:24
+ * @LastEditTime: 2022-02-14 15:46:15
  * @FilePath: /kmaps/src/anchorLine.ts
  */
 
-/*
- * @Author: wjz
- * @Date: 2021-11-18 10:08:49
- * @LastEditors: wjz
- * @LastEditTime: 2022-02-09 14:01:23
- * @FilePath: /kmaps/src/_ShapeNode.ts
- */
 
 import Konva from "./js/konva.min";
 
@@ -32,8 +25,8 @@ interface attrs {
   dash?:Array<number>, // 虚线数组 详情参照konva.Line
   closed?:boolean, //是否闭合图形
   draggable?:boolean, //是否可拖拽
-  // anchor?:boolean //是否绘制拖拽锚点 默认为true
-  // anchorVisible?:boolean, //拖拽锚点是否显示默认 false, anchor 为true时有效
+  anchor?:boolean //是否绘制拖拽锚点 默认为true
+  anchorVisible?:boolean, //拖拽锚点是否显示默认 false, anchor 为true时有效
   absoluteSize?:boolean //绝对尺寸，不与舞台一同缩放 默认false
 }
 
@@ -116,6 +109,7 @@ export default class AnchorLine extends Konva.Group {
     })
   }
   _lineFun(attrs: any) {
+    if(!attrs.points){return}
     let scale = this._stage.scale()
     // let rgb = attrs.stroke ? colorHextoRGBA(attrs.stroke, 0.5) : ""
     // let _points = arrayConvert(attrs.points)
@@ -202,7 +196,7 @@ export default class AnchorLine extends Konva.Group {
    */
    addPoints(points:[number,number]){
     //添加拖拽锚点
-    let index  = this.find("._drag_anchor").length - 1 || 0 //锚点序号index
+    let index  = this.find("._drag_anchor").length //锚点序号index
     this._circleFun({x:points[0],y:points[1]},index)
     if(!this.attrs.anchor){return}
     let line = this._line.points()
@@ -221,8 +215,6 @@ export default class AnchorLine extends Konva.Group {
     this._line.points(arrayConvert(points))
     //获取需要移除的锚点对象
     let anchor = this.findOne(`#_drag_anchor-${index}`)
-    console.log(anchor.position(),points)
-    
     //销毁目标锚点
     if(anchor){anchor.destroy() }
     return this
@@ -258,6 +250,13 @@ export default class AnchorLine extends Konva.Group {
       return [x, y]
     })
     return points
+  }
+  /**
+   * @description 获取锚点数组
+   * @returns {Array} anchor 节点对象
+   */
+  getAnchor(){
+    return this.find("._drag_anchor")
   }
   //二维数组转一维
   // _pointsArray(arr: [number]) {

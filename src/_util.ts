@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-22 16:20:15
  * @LastEditors: wjz
- * @LastEditTime: 2022-02-11 19:33:04
+ * @LastEditTime: 2022-02-14 20:49:37
  * @FilePath: /kmaps/src/_util.ts
  */
 import Hammers from './js/hammer-konva.js'
@@ -79,12 +79,13 @@ export function Hammer() {
   let hammer:any = new Hammers(this, { //绑定事件
     domEvents: true
   });
-  hammer.get('pinch').set({
-    enable: true
-  });
   hammer.get('tap').set({
     enable: false
   });
+  hammer.get('pinch').set({
+    enable: true
+  })
+  
   var scaleStart = new CustomEvent('scalestart', {
     detail: {
       scale:1,
