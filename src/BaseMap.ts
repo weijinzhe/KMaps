@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-26 15:59:56
  * @LastEditors: wjz
- * @LastEditTime: 2021-12-14 11:00:06
+ * @LastEditTime: 2022-02-14 09:47:15
  * @FilePath: /kmaps/src/BaseMap.ts
  */
 import Konva from "./js/konva.min.js"
@@ -62,8 +62,25 @@ export default class BaseMap extends Konva.Group {
       }
       return this
     }
+    /**
+     * @description 根据图片坐标重置图层的默认坐标系归零点
+     * @param {boolean}  默认true
+     */
     awaitMap(param?:boolean){
       if (!arguments.length) { return this.attrs.awaitMap }
       this.attrs.awaitMap = param
+    }
+    /**
+     * @description 将目标坐标转换为相对图片的坐标（图片左上角为0，0 点）
+     * @param pos {x,y} 坐标位置 
+     * @returns 转换后的坐标位置
+     */
+    relativePosition(pos){
+      let scale = this.getStage().scaleX()
+      let absPos = this.getAbsolutePosition()
+      return {
+        x:(pos.x-absPos.x)/scale,
+        y:(pos.y-absPos.y)/scale
+      }
     }
   }

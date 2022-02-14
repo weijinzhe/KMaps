@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-21 15:30:30
  * @LastEditors: wjz
- * @LastEditTime: 2022-02-10 14:10:36
+ * @LastEditTime: 2022-02-14 10:15:45
  * @FilePath: /kmaps/src/index.ts
  */
 import Konva from './js/konva.min.js'
@@ -27,7 +27,7 @@ import Path from './Path'
 import AnchorLine from './AnchorLine'
 
 import Line from "./Line"
-import Polygon from "./Polygon";
+// import Polygon from "./Polygon";
 import Circle from './Circle';
 
 import Text from './Text';
@@ -52,5 +52,5 @@ export default {
     // Polygon,
     Circle,
     Text,
-    versions:"1.2.0"
+    versions:"1.3.0"
 }

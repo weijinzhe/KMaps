@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-19 20:35:58
  * @LastEditors: wjz
- * @LastEditTime: 2022-02-10 14:02:53
+ * @LastEditTime: 2022-02-14 09:44:01
  * @FilePath: /kmaps/test/index.html
 -->
 <!DOCTYPE html>
@@ -46,7 +46,7 @@
     import { bezierData } from './util.js'
 
     import KMaps from '../src/index.ts'
-    import img from './assets/maps.png'
+    import img from './assets/map2.png'
     let width = document.getElementById('KMaps').clientWidth,
       height = document.getElementById('KMaps').clientHeight
     console.log(width, height);
@@ -67,7 +67,7 @@
     let pathGroup = new KMaps.Group({ id: "pathGroup"})
     let trackGroup = new KMaps.Group({ id: "trackGroup" }) //轨迹
 
-    let shapeGroup = new KMaps.Group({ id: "shapeGroup" ,awaitMap:false })
+    let shapeGroup = new KMaps.Group({ id: "shapeGroup" ,awaitMap:true })
     let circleGroup = new KMaps.Group({ id: "circleGroup" }) //图形层
     let locationGroup = new KMaps.Group({ id: "locationGroup" }) //定位层
     let grid = new KMaps.Grid({ grid: 60 })// 创建网格层
@@ -92,7 +92,22 @@
       }
     })
 
+    stage.on("tap", function (e) {
+      e.cancelBubble = true;
+      console.log(baseMap.getAbsolutePosition());
 
+      let pos = baseMap.relativePosition(this.getPointerPosition())
+      let circle = new KMaps.Circle({
+      x:pos.x,
+      y:pos.y,
+      radius:5,
+      fill:"#FFD700",
+      shadowBlur:5,
+      shadowColor:"#FFD700",
+      absoluteSize:true
+    })
+    circleGroup.add(circle)
+    })
     //加载图片
     let image = new Image()
     image.onload = async function () {
@@ -124,7 +139,7 @@
     }
     image.src = img
 
-    loc.location({ x: -100, y: -100, angle: 90 })
+    loc.location({ x: 0, y: 0, angle: 90 })
     let move = [0,0]
     
     // console.log(KMaps,stage);
@@ -210,53 +225,70 @@
       // }
       targetShape = this
     }) */
+    let _Line = new KMaps.Line({
+      points: [[0, 0], [500, 500]],
+      stroke:"#at0a07",
+      fill:"#fd5807",
+      // closed:true,
+      strokeWidth:3,
+      // hitStrokeWidth:20,
+      // absoluteSize:true, 
+      // anchorVisible:true,
+      // draggable:false
+    })
+    shapeGroup.add(_Line)
+
     // 锚点拖拽线 封装
     let anchor_Line = new KMaps.AnchorLine({
       id: "aaa",
-      points: [[100, 200], [500, 500]],
-      color:"#fc0a07",
+      points: [[100, 200], [100, 500]],
+      stroke:"#fc0a07",
       strokeWidth:3,
       hitStrokeWidth:20,
       // absoluteSize:true, 
-      anchor:true,
+      // anchor:true,
       // anchorVisible:true,
       draggable:false
     })
 
     shapeGroup.add(anchor_Line)
-    anchor_Line.on("click touchend ", function (e) {
+
+    anchor_Line.on("click tap ", function (e) {
       console.log(e);
       e.cancelBubble = true;
       // if(!this.draggable()){
         if(!this.draggable()){
         this.draggable(true)
-        this.anchorVisible(true)
+        // this.anchorVisible(true)
       }else{
         this.draggable(false)
-        this.anchorVisible(false)
+        // this.anchorVisible(false)
       }
       targetShape = this
     })
-    anchor_Line.addPoints([0,0]) //添加锚点
+    // anchor_Line.addPoints([0,0]) //添加锚点
     // anchor_Line.removePoints(0) //删除节点
     let anchor_Polygon = new KMaps.AnchorLine({
       id: "bbb",
       points: [[200, 200], [500, 200],[500,500],[200,500]],
-      color:KMaps.Util.colorHextoRGBA("#fc000d",0.4),
-      absoluteSize:false,
-      anchor:true,
+      stroke:'#fc000d',
+      strokeWidth:2,
+      // absoluteSize:false,
+      fill:KMaps.Util.colorHextoRGBA("#fc000d",0.4),
+      anchorVisible:true,
       closed:true,
-      // draggable:false
+      // bezier:true
+      draggable:true
     })
     shapeGroup.add(anchor_Polygon)
-    anchor_Polygon.on("click touchend", function (e) {
+    anchor_Polygon.on("click tap", function (e) {
       e.cancelBubble = true;
       if(!this.draggable()){
         this.draggable(true)
-        this.anchorVisible(true)
+        // this.anchorVisible(true)
       }else{
         this.draggable(false)
-        this.anchorVisible(false)
+        // this.anchorVisible(false)
       }
       targetShape = this
     })
