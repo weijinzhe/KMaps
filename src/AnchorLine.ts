@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2022-02-09 14:26:02
  * @LastEditors: wjz
- * @LastEditTime: 2022-02-14 09:39:33
+ * @LastEditTime: 2022-02-14 11:50:24
  * @FilePath: /kmaps/src/anchorLine.ts
  */
 
@@ -63,7 +63,7 @@ let _strokeWidth = 1,_hitStrokeWidth=0 // 画笔默认参数
 export default class AnchorLine extends Konva.Group {
   constructor(attrs: attrs) {
     attrs["absoluteSize"] === false ? null : attrs["absoluteSize"] = true //绝对尺寸，与舞台一同缩放
-    // attrs["anchor"] === false ? null : attrs["anchor"] = true //拖拽锚点
+    attrs["anchor"] === false ? null : attrs["anchor"] = true //拖拽锚点
 
     super(attrs)
     this._strokeWidth = attrs.strokeWidth || 1//宽度默认为1
@@ -76,11 +76,11 @@ export default class AnchorLine extends Konva.Group {
     // }
     this._stage = window["_KMap"]["_Stage"]  //(window as any)._KMap_Stage
     this._lineFun(attrs)
-    // if(attrs['anchor'] !== false){
+    if(attrs['anchor'] !== false){
       attrs.points.forEach((_item: any, _index: any, _array: any) => {
         this._circleFun({ x: _item[0], y: _item[1] }, _index)
       });
-    // }
+    }
     
     let self: any = this
 
@@ -154,8 +154,8 @@ export default class AnchorLine extends Konva.Group {
       stroke: '#00aaff',
       strokeWidth: 2,
       hitStrokeWidth: this.attrs.hitStrokeWidth, //自定义图形选取范围 
-      // visible: this.attrs.anchorVisible || false,//super.draggable() || false, //默认显示状态
-      visible: super.draggable() || false, //默认显示状态
+      visible: this.attrs.anchorVisible || false,//super.draggable() || false, //默认显示状态
+      // visible: super.draggable() || false, //默认显示状态
 
       draggable: true,
     })
@@ -181,10 +181,10 @@ export default class AnchorLine extends Konva.Group {
   draggable(param: boolean) {
     if (!arguments.length) { return super.draggable() }
     super.draggable(param)
-    let anchorArr = this.find("._drag_anchor")
-    for (let item of anchorArr) {
-      item.visible(param)
-    }
+    // let anchorArr = this.find("._drag_anchor")
+    // for (let item of anchorArr) {
+    //   item.visible(param)
+    // }
     //防止事件冒泡，提前阻止，拖拽关闭后 移除
     if (param) {
       this.on("dragstart.—custom dragmove.—custom dragend.—custom touchstart.—custom touchmove.—custom touchend.—custom", function (e: any) {
@@ -229,20 +229,20 @@ export default class AnchorLine extends Konva.Group {
   }
 
   /**
-   * @description 锚点显示状态 anchor 为ture 可用 （已废弃）
+   * @description 锚点显示状态 anchor 为ture 可用 
    * @param {boolean} param 显示状态
    * @returns {boolean} anchorVisible 锚点显示状态
    * 
    */
-  // anchorVisible(param: boolean){
-  //   if (!arguments.length) { return this.attrs.anchorVisible }
-  //   this.attrs.anchorVisible = param
-  //   let anchorArr = this.find("._drag_anchor")
-  //   for (let item of anchorArr) {
-  //     item.visible(param)
-  //   }
-  //   return param
-  // }
+  anchorVisible(param: boolean){
+    if (!arguments.length) { return this.attrs.anchorVisible }
+    this.attrs.anchorVisible = param
+    let anchorArr = this.find("._drag_anchor")
+    for (let item of anchorArr) {
+      item.visible(param)
+    }
+    return param
+  }
   /**
    * @description 获取当前图形的锚点坐标
    * 

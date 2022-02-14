@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-19 20:35:58
  * @LastEditors: wjz
- * @LastEditTime: 2022-02-14 09:44:01
+ * @LastEditTime: 2022-02-14 11:50:45
  * @FilePath: /kmaps/test/index.html
 -->
 <!DOCTYPE html>
@@ -275,20 +275,21 @@
       strokeWidth:2,
       // absoluteSize:false,
       fill:KMaps.Util.colorHextoRGBA("#fc000d",0.4),
-      anchorVisible:true,
+      // anchorVisible:true,
       closed:true,
       // bezier:true
-      draggable:true
+      draggable:true,
+      anchor:false
     })
     shapeGroup.add(anchor_Polygon)
     anchor_Polygon.on("click tap", function (e) {
       e.cancelBubble = true;
-      if(!this.draggable()){
-        this.draggable(true)
-        // this.anchorVisible(true)
+      if(!this.anchorVisible()){
+        // this.draggable(true)
+        this.anchorVisible(true)
       }else{
-        this.draggable(false)
-        // this.anchorVisible(false)
+        // this.draggable(false)
+        this.anchorVisible(false)
       }
       targetShape = this
     })
