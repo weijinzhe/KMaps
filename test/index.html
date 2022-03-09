@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-19 20:35:58
  * @LastEditors: wjz
- * @LastEditTime: 2022-02-14 13:52:30
+ * @LastEditTime: 2022-03-09 09:16:58
  * @FilePath: /kmaps/test/index.html
 -->
 <!DOCTYPE html>
@@ -236,7 +236,7 @@
       // anchorVisible:true,
       // draggable:false
     })
-    shapeGroup.add(_Line)
+    // shapeGroup.add(_Line)
 
     // 锚点拖拽线 封装
     let anchor_Line = new KMaps.AnchorLine({
@@ -247,33 +247,38 @@
       hitStrokeWidth:20,
       // absoluteSize:true, 
       // anchor:true,
-      anchorVisible:true,
+      anchorVisible:false,
       draggable:false
     })
 
-    shapeGroup.add(anchor_Line)
-
     anchor_Line.on("click tap ", function (e) {
-      console.log(e);
+      // console.log(e);
       e.cancelBubble = true;
       // if(!this.draggable()){
         if(!this.draggable()){
+      // console.log(anchor_Line.clone());
+      let ce = this.clone()
         this.draggable(true)
-        // this.anchorVisible(true)
-    anchor_Line.removePoints(2) //添加锚点
+        this.anchorVisible(true)
+        shapeGroup.add(ce)
+        this.moveToTop()
+
+    // anchor_Line.removePoints(2) //添加锚点
 
       }else{
         this.draggable(false)
-        // this.anchorVisible(false)
+        this.anchorVisible(false)
       }
       targetShape = this
     })
-    anchor_Line.addPoints([500,0]) //添加锚点
+    shapeGroup.add(anchor_Line)
+    // console.log(shapeGroup.clone());
+    // anchor_Line.addPoints([500,0]) //添加锚点
 
     // anchor_Line.removePoints(0) //删除节点
     let anchor_Polygon = new KMaps.AnchorLine({
       id: "bbb",
-      // points: [[200, 200], [500, 200],[500,500],[200,500]],
+      points: [[200, 200], [500, 200],[500,500],[200,500]],
       stroke:'#fc000d',
       strokeWidth:2,
       // absoluteSize:false,
@@ -282,16 +287,16 @@
       closed:true,
       // bezier:true
       draggable:true,
-      anchor:false
+      anchor:true
     })
-    shapeGroup.add(anchor_Polygon)
+    // shapeGroup.add(anchor_Polygon)
     anchor_Polygon.on("click tap", function (e) {
       e.cancelBubble = true;
       if(!this.anchorVisible()){
-        // this.draggable(true)
+        this.draggable(true)
         this.anchorVisible(true)
       }else{
-        // this.draggable(false)
+        this.draggable(false)
         this.anchorVisible(false)
       }
       targetShape = this

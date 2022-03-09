@@ -306,7 +306,7 @@ export abstract class Container<
   getAllIntersections(pos) {
     var arr = [];
 
-    this.find('Shape').forEach(function (shape: Shape) {
+    this.find('Shape').forEach(function  (shape: Shape) {
       if (shape.isVisible() && shape.intersects(pos)) {
         arr.push(shape);
       }
