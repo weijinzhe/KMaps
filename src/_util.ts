@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-22 16:20:15
  * @LastEditors: wjz
- * @LastEditTime: 2022-03-03 19:32:34
+ * @LastEditTime: 2022-03-18 10:33:08
  * @FilePath: /kmaps/src/_util.ts
  */
 import Hammers from './js/hammer-konva.js'
@@ -255,10 +255,30 @@ export function colorHextoRGBA(sHex:any, alpha:number = 1){
     // 或
     return 'rgba(' + sColorChange.join(',') + ',' + alpha + ')'
   } else {
-    return sColor
+    return sColor 
   }
 }
+
+//rgb 转数组
+export function rgbaToArray(color:string){
+  let ret = [];
+	let colorStr = new RegExp(/(?<=\()\S+(?=\))/).exec(color); //校验是否为颜色值
+	if (colorStr) {
+		ret = colorStr[0].split(",");
+		ret = ret.map(item => {
+			return Number.parseFloat(item, 2);
+		});
+	}
+
+	// if (normalized) {
+	// 	ret = ret.map(item => {
+	// 		return (item = +item / 255);
+	// 	});
+	// }
+	return ret;
+}
   
+
 //rgb 转 hex
 export function colorRGBtoHex(color:any) {
   if(color.charAt(0) == '#'){

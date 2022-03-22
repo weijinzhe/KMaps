@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-21 15:30:30
  * @LastEditors: wjz
- * @LastEditTime: 2022-02-14 10:15:45
+ * @LastEditTime: 2022-03-17 17:30:00
  * @FilePath: /kmaps/src/index.ts
  */
 import Konva from './js/konva.min.js'
@@ -52,5 +52,5 @@ export default {
     // Polygon,
     Circle,
     Text,
-    versions:"1.3.0"
+    versions:"1.4.0"
 }

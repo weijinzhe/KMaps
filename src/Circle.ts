@@ -2,16 +2,7 @@
  * @Author: wjz
  * @Date: 2021-11-22 16:45:13
  * @LastEditors: wjz
- * @LastEditTime: 2021-12-17 20:56:05
- * @FilePath: /kmaps/src/Circle.ts
- */
-import konvaMin from "./js/konva.min";
-
-/*
- * @Author: wjz
- * @Date: 2021-11-22 16:45:13
- * @LastEditors: wjz
- * @LastEditTime: 2021-11-22 16:45:14
+ * @LastEditTime: 2022-03-22 14:56:21
  * @FilePath: /kmaps/src/Circle.ts
  */
 
@@ -42,24 +33,25 @@ interface attrs {
  */
 export default class Circle extends Konva.Circle {
   constructor(attrs: any) {
-    attrs["absoluteSize"] === false ? null : attrs["absoluteSize"] = true //绝对尺寸，不与舞台一同缩放
-    super(attrs)
     let _stage = window["_KMap"]["_Stage"] //(window as any)._KMap_Stage
-    let self = this
 
+    attrs["absoluteSize"] === false ? null : attrs["absoluteSize"] = true //绝对尺寸，不与舞台一同缩放
+    // let config = JSON.parse(JSON.stringify(attrs))
+    super(attrs)
+    let self = this
+    scale_event()
     _stage.addEventListener("scaleend setscale", function (e:any) {
       e.cancelBubble = true;
-      if(attrs.absoluteSize){
-        scale_event()
-      }
+      scale_event()
     })
-    scale_event()
     async function scale_event() {
-      let scale = _stage.scaleX()
-      self.scale({
-        x: 1 / scale,
-        y: 1 / scale
-      })
+      if(attrs.absoluteSize){
+        let scale = _stage.scaleX()
+        self.scale({
+          x: 1 / scale,
+          y: 1 / scale
+        })
+      }
     }
     // //手势缩放结束
     // _stage.addEventListener("pinchend", function (e) {

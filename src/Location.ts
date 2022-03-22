@@ -2,13 +2,13 @@
  * @Author: wjz
  * @Date: 2021-10-29 11:10:22
  * @LastEditors: wjz
- * @LastEditTime: 2021-12-01 15:36:52
+ * @LastEditTime: 2022-03-22 14:55:37
  * @FilePath: /kmaps/src/Location.ts
  */
 
 import Konva from "./js/konva.min.js"
 
-import { wheelEvent } from './_util'
+import {colorHextoRGBA ,rgbaToArray} from './_util'
 
 interface pos {
   x: number,
@@ -39,10 +39,22 @@ export default class Location extends Konva.Group {
   drawGraph() {
     this._drawstate = true
     const self = this
+    let attrs = this.attrs
+    let themeColorArray = rgbaToArray(colorHextoRGBA(attrs.themeColor || "#F00000")).slice(0,3) //主题色
     let radius = 12
-    const _anchor: any = anchor(radius)
+
+    const _anchor: any = anchor({
+      radius, //定位点尺寸 
+      themeColor:attrs.themeColor, //主题色
+      shadowColor:attrs.shadowColor,
+      shadowBlur:attrs.shadowBlur,
+    })
     this._anchor = _anchor
     this._drag_group = new Konva.Group({ id: "_drag_group", visible: false }) //拖拽图形组
+    //主题颜色 rgb反色
+    let R = 255-themeColorArray[0],
+        G = 255-themeColorArray[1],
+        B = 255-themeColorArray[2];
     let _drag_group_scope = new Konva.Circle({ //定位点范围
       id: "_drag_group_scope",
       radius: 80,
@@ -50,21 +62,21 @@ export default class Location extends Konva.Group {
       // fillRadialGradientColorStops: [0, 'rgba(252, 0, 13, 0.4)', 0.3, 'rgba(252, 0, 13, 0.2)', 1,
       //   'rgba(255, 255, 255,0)'
       // ],
-      fillRadialGradientColorStops: [0, 'rgba(0, 90, 255, 0.4)', 0.3, 'rgba(0, 90, 255, 0.2)', 1,
+      fillRadialGradientColorStops: [0, `rgba(${R}, ${G}, ${B}, 0.4)`, 0.3, `rgba(${R}, ${G}, ${B}, 0.2)`, 1,
         'rgba(255, 255, 255,0)'
       ],
       fillRadialGradientStartRadius: 80,
       // fillRadialGradientEndRadius: 0,
-      stroke: 'rgba(0, 90, 255, 1)', //'rgb(32, 244, 18)', //'rgb(252, 0, 13)', //'rgb(80, 138, 255)'
+      stroke:`rgba(${R}, ${G}, ${B}, 1)`,//'rgba(0, 90, 255, 1)', //'rgb(32, 244, 18)', //'rgb(252, 0, 13)', //'rgb(80, 138, 255)'
       strokeWidth: 0.1,
     });
     this._drag_group_scope = _drag_group_scope
     let _drag_group_line = new Konva.Line({ //角度线
       id: '_drag_group_line',
       points: [0, 0, _drag_group_scope.y() + 80, 0],
-      stroke: '#fc0a07',
+      stroke: `rgba(${themeColorArray.join(',')}, 1)`,//'#fc0a07',
       strokeWidth: 1,
-      shadowColor: '#fd5807',
+      // shadowColor: `rgba(${themeColorArray.join(',')}, 1)`,//'#fd5807',
       // shadowBlur: 3,
       // shadowOpacity: 0.8,
       hitStrokeWidth: 20,
@@ -75,9 +87,9 @@ export default class Location extends Konva.Group {
       x: _drag_group_scope.x() + 80,
       radius: 12,
       fill: '#ffffff',
-      stroke: '#fd5807',
+      stroke: `rgba(${themeColorArray.join(',')}, 1)`,//'#fd5807',
       strokeWidth: 1.5,
-      shadowColor: '#fd5807',
+      // shadowColor: `rgba(${themeColorArray.join(',')}, 1)`,//'#fd5807',
       // shadowBlur: 3,
       // shadowOpacity: 0.8,
       hitStrokeWidth: 20,
@@ -95,14 +107,14 @@ export default class Location extends Konva.Group {
     });
     this._drag_group_anchor = _drag_group_anchor
     this._drag_group.add(_drag_group_scope, _drag_group_line, _drag_group_anchor)
-
+    
     this._scope = new Konva.Circle({ //定位点辅助范围
       id: "anchor_scope",
       radius: radius,
       // fillRadialGradientColorStops: [0, 'rgba(0, 139, 255, 0.4)', 0.3, 'rgba(0, 139, 255, 0.2)', 1,
       //   'rgba(255, 255, 255,0)'
       // ],
-      fillRadialGradientColorStops: [0, 'rgba(252, 0, 13, 0.4)', 0.3, 'rgba(252, 0, 13, 0.2)', 1,
+      fillRadialGradientColorStops: [0, `rgba(${themeColorArray.join(',')}, 0.4)`, 0.3, `rgba(${themeColorArray.join(',')}, 0.2)`, 1,
         'rgba(255, 255, 255,0)'
       ],
       fillRadialGradientStartRadius: radius,
@@ -186,7 +198,7 @@ export default class Location extends Konva.Group {
     //     scale_event()
     //   }
     // })
-
+    this.location({x:(typeof attrs.x) == 'number'?attrs.x:0,y:(typeof attrs.y) == 'number'?attrs.y:0,angle:(typeof attrs.angle) == 'number'?attrs.angle:0})
   }
 
   /** 
@@ -248,40 +260,49 @@ export default class Location extends Konva.Group {
   }
 }
 
-
-
-
-
-
-
+/**
+ * 定位图标
+ * @param attrs.radius 定位点圆心半径尺寸 箭头跟随半径自适应大小
+ * @param attrs.circleFill 圆心填充颜色
+ * @param attrs.arrowFill 箭头填充颜色
+ * @param attrs.shadowColor 阴影颜色
+ * @param attrs.shadowBlur 阴影延伸尺寸
+ * @returns 
+ */
 // 定位锚点绘制初始化图形组
-function anchor(radius: number) {
-  let group = new Konva.Group()
+function anchor(attrs:any) {
+  let group = new Konva.Group({
+    rotation:attrs.rotation
+  })
   let circle = new Konva.Circle({ //圆心
     id: "anchor_circle",
-    radius: radius,
+    radius: attrs.radius,
     fill: '#fff',//'rgb(255, 0, 0)', //'#0033FF',
     //strokeWidth: 0
-    shadowColor: 'rgba(255, 0, 0,1)', //'#0033FF',
+    shadowColor: attrs.themeColor ||'rgb(255, 0, 0)', //'#0033FF',
     shadowBlur: 10,
   });
-  let ring = new Konva.Ring({ //外圈
-    id: "anchor_ring",
-    innerRadius: radius / 1.5,
-    outerRadius: radius,
-    fill: '#fff',
-    strokeWidth: 0.1,
-    shadowColor: 'rgba(255, 0, 0,0.8)', //'#0033FF',
-    shadowBlur: 10,
-  });
+  // let ring = new Konva.Ring({ //外圈
+  //   id: "anchor_ring",
+  //   innerRadius: radius / 1.5,
+  //   outerRadius: radius,
+  //   fill: '#fff',
+  //   strokeWidth: 0.1,
+  //   shadowColor: 'rgba(255, 0, 0,0.7)', //'#0033FF',
+  //   shadowBlur: 10,
+  // });
   let arrow = new Konva.RegularPolygon({ //方向箭头
     id: "anchor_arrow",
-    x: radius + 1,
+    // y: attrs.radius /2,
+    x:attrs.radius +1,
     sides: 3,
-    radius: radius - 1,
+    radius: attrs.radius - 1,
     rotation: 90,
-    fill: 'rgb(255, 0, 0)', //'#0033FF',
+    fill: attrs.themeColor || 'rgb(255, 0, 0)', //'#0033FF',
+    // shadowColor: 'rgba(255, 0, 0,1)', //'#0033FF',
+    // shadowBlur: 10,
+
   });
-  group.add(arrow, circle)
+  group.add(arrow,circle)
   return group
 }
