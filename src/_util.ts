@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-22 16:20:15
  * @LastEditors: wjz
- * @LastEditTime: 2022-03-22 19:14:52
+ * @LastEditTime: 2022-03-22 19:19:27
  * @FilePath: /kmaps/src/_util.ts
  */
 import Hammers from './js/hammer-konva.js'
@@ -323,13 +323,9 @@ export function adsorb (target:any, layer:any = _stage) {
       }
       let tarRect = this.getClientRect();
       for (let ar of layerAnchor) {
-        // if (ar === this) {
-        //   return;
-        // }
+        
         if (haveIntersection(ar.getClientRect(), tarRect)) { //进入目标碰撞监测范围
-          let G = ar.getParent()
-          
-          let arPos = ar.getAbsolutePosition(G)
+          let arPos = ar.getAbsolutePosition(ar.getParent().getParent())
           let node = this.getParent() //获取父级图组  富信息图形节点
           let line = node.findOne('._line') //线图形、主图
           let anchor = node.find('._drag_anchor')
