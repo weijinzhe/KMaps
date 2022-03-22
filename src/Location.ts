@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-29 11:10:22
  * @LastEditors: wjz
- * @LastEditTime: 2022-03-22 14:55:37
+ * @LastEditTime: 2022-03-22 15:20:53
  * @FilePath: /kmaps/src/Location.ts
  */
 
@@ -187,17 +187,11 @@ export default class Location extends Konva.Group {
     }
     this._scale_event = scale_event
     
-    //手势缩放结束
+    //缩放结束
     this._stage.addEventListener("scaleend setscale", function (e) {
       e.cancelBubble = true;
       scale_event()
     })
-    // //鼠标滑轮缩放
-    // wheelEvent(this._stage, (e: any) => {
-    //   if (e.type == "wheelend") {
-    //     scale_event()
-    //   }
-    // })
     this.location({x:(typeof attrs.x) == 'number'?attrs.x:0,y:(typeof attrs.y) == 'number'?attrs.y:0,angle:(typeof attrs.angle) == 'number'?attrs.angle:0})
   }
 

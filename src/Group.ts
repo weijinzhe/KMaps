@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-11-12 11:02:13
  * @LastEditors: wjz
- * @LastEditTime: 2021-12-20 14:48:22
+ * @LastEditTime: 2022-03-22 18:34:45
  * @FilePath: /kmaps/src/Group.ts
  */
 import Konva from "./js/konva.min.js"
@@ -10,7 +10,7 @@ import Konva from "./js/konva.min.js"
 /**
  * Group
  * @description 重写的add方法 在原功能基础上增加调用子节点绘制方法
- * @extends Konva.Group
+ * @extends Konva.Group https://konvajs.org/api/Konva.Group.html
  * @param {boolean} awaitMap 是否等待底图绘制状态
  * @example
  * let node = new Group()
@@ -37,6 +37,7 @@ export default class Group extends Konva.Group {
   }
   /**
    * @description 添加子节点元素，参数顺序为节点图层排列顺序
+   * @override
    * @example
    * node.add(child1,child2,child3)
    */
@@ -48,6 +49,11 @@ export default class Group extends Konva.Group {
       }
     }
   }
+  /**
+   * @description 是否自动响应修改底图尺寸变化带来的坐标系变化
+   * @param param 
+   * @returns 
+   */
   awaitMap(param?:boolean){
     if (!arguments.length) { return this.attrs.awaitMap }
     this.attrs.awaitMap = param

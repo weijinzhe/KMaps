@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-11-22 16:45:13
  * @LastEditors: wjz
- * @LastEditTime: 2022-03-22 14:56:21
+ * @LastEditTime: 2022-03-22 15:13:02
  * @FilePath: /kmaps/src/Circle.ts
  */
 
@@ -53,16 +53,5 @@ export default class Circle extends Konva.Circle {
         })
       }
     }
-    // //手势缩放结束
-    // _stage.addEventListener("pinchend", function (e) {
-    //   e.cancelBubble = true;
-    //   scale_event()
-    // })
-    // //鼠标滑轮缩放
-    // wheelEvent(_stage, (e: any) => {
-    //   if (e.type == "wheelend") {
-    //     scale_event()
-    //   }
-    // })
   }
 }

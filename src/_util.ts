@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-22 16:20:15
  * @LastEditors: wjz
- * @LastEditTime: 2022-03-18 10:33:08
+ * @LastEditTime: 2022-03-22 18:30:30
  * @FilePath: /kmaps/src/_util.ts
  */
 import Hammers from './js/hammer-konva.js'
@@ -12,18 +12,18 @@ import Hammers from './js/hammer-konva.js'
  * @param pos 图层拖拽范围限制
  * @returns pos 拖拽后的坐标
  */
-export function dragBoundFunc(pos:object) {
+export function dragBoundFunc(pos: object) {
   let apos = this.absolutePosition() //获取舞台实际位置
   let {
     x,
     y
-  }:any = pos //舞台移动位置
-  let scope:any = {
+  }: any = pos //舞台移动位置
+  let scope: any = {
     ...pos
   }
   let baseMap = this.findOne('#BaseMap') //获取图片对象
-  if(!baseMap){ //舞台没有添加图层，没有可参照图形做范围限制，不可拖拽移动
-    return {x:0,y:0}
+  if (!baseMap) { //舞台没有添加图层，没有可参照图形做范围限制，不可拖拽移动
+    return { x: 0, y: 0 }
   }
   let imgPos = baseMap.position() //图片位置
   let img = baseMap.size() //图片尺寸
@@ -70,13 +70,13 @@ export function dragBoundFunc(pos:object) {
  */
 export function Hammer() {
 
-  
+
   let scaleRange = {
-    max:this.attrs.scaleMax,
-    min:this.attrs.scaleMin
+    max: this.attrs.scaleMax,
+    min: this.attrs.scaleMin
   }
 
-  let hammer:any = new Hammers(this, { //绑定事件
+  let hammer: any = new Hammers(this, { //绑定事件
     domEvents: true
   });
   hammer.get('tap').set({
@@ -85,37 +85,37 @@ export function Hammer() {
   hammer.get('pinch').set({
     enable: true
   })
-  
+
   var scaleStart = new CustomEvent('scalestart', {
     detail: {
-      scale:1,
-      pointer:[0,0]
+      scale: 1,
+      pointer: [0, 0]
     }
   });
   var scaleMove = new CustomEvent('scalemove', {
     detail: {
-      scale:1,
-      pointer:[0,0]
+      scale: 1,
+      pointer: [0, 0]
     }
   });
   var scaleend = new CustomEvent('scaleend', {
     detail: {
-      scale:1,
-      pointer:[0,0]
+      scale: 1,
+      pointer: [0, 0]
     }
   });
 
 
 
   var scaleBy = 1.05;
-  var pointer:any ={x:0,y:0}
+  var pointer: any = { x: 0, y: 0 }
   let st = null; //鼠标滚轮反馈
   let wheelState = true
   this.on(' pinchstart pinchmove pinchend wheel', (e) => { //鼠标缩放
     e.cancelBubble = true;
     //全局缩放事件
     var oldScale = this.scaleX();
-    let mousePointTo:any = {},
+    let mousePointTo: any = {},
       newScale = 1,
       newPos = {};
     switch (e.type) {
@@ -140,21 +140,21 @@ export function Hammer() {
           y: newScale
         });
         this.position(newPos);
-        if(wheelState){
-          scaleStart.detail.scale =  newScale
-          scaleStart.detail.pointer == [pointer.x,pointer.y]
+        if (wheelState) {
+          scaleStart.detail.scale = newScale
+          scaleStart.detail.pointer == [pointer.x, pointer.y]
           this.dispatchEvent(scaleStart);
           wheelState = false
-        }else{
-          scaleMove.detail.scale =  newScale
-          scaleMove.detail.pointer == [pointer.x,pointer.y]
+        } else {
+          scaleMove.detail.scale = newScale
+          scaleMove.detail.pointer == [pointer.x, pointer.y]
           this.dispatchEvent(scaleMove);
           wheelState = false
         }
         clearTimeout(st)
         st = setTimeout(() => { //滚动触发间隔50ms为滚动结束
-          scaleend.detail.scale =  newScale
-          scaleend.detail.pointer == [pointer.x,pointer.y]
+          scaleend.detail.scale = newScale
+          scaleend.detail.pointer == [pointer.x, pointer.y]
           this.dispatchEvent(scaleend);
           wheelState = true
         }, 100)
@@ -162,8 +162,8 @@ export function Hammer() {
       case 'pinchstart': //捏放开始
         this.draggable(false)
         pointer = this.getPointerPosition(); //e.evt.gesture.center; //缩放基准点
-        scaleStart.detail.scale =  this.scaleX()
-        scaleStart.detail.pointer == [pointer.x,pointer.y]
+        scaleStart.detail.scale = this.scaleX()
+        scaleStart.detail.pointer == [pointer.x, pointer.y]
         this.dispatchEvent(scaleStart);
         break;
       case 'pinchmove': //捏放中
@@ -185,16 +185,16 @@ export function Hammer() {
         });
         this.position(newPos);
 
-        scaleMove.detail.scale =  newScale
-        scaleMove.detail.pointer == [pointer.x,pointer.y]
+        scaleMove.detail.scale = newScale
+        scaleMove.detail.pointer == [pointer.x, pointer.y]
         this.dispatchEvent(scaleMove);
         break;
       case 'pinchend': //捏放结束
         this.draggable(true)
         this.dispatchEvent(scaleend);
 
-        scaleend.detail.scale =  this.scaleX()
-        scaleend.detail.pointer == [pointer.x,pointer.y]
+        scaleend.detail.scale = this.scaleX()
+        scaleend.detail.pointer == [pointer.x, pointer.y]
         this.dispatchEvent(scaleend);
         break;
     }
@@ -207,33 +207,33 @@ export function Hammer() {
  * @param {Object} target 响应目标
  * @param {Object} callBack 事件结束回调
  */
-export function wheelEvent(target:Node,callBack:Function) {
-    let st = null;
-    target.addEventListener('wheel', function(e) {
-      
-    let a =  Reflect.defineProperty(e,"type",{
-        value:"wheelmove",
+export function wheelEvent(target: Node, callBack: Function) {
+  let st = null;
+  target.addEventListener('wheel', function (e) {
+
+    let a = Reflect.defineProperty(e, "type", {
+      value: "wheelmove",
+      enumerable: false,
+      configurable: false,
+      writable: true,
+    })
+    callBack(e)
+    clearTimeout(st)
+    st = null
+    st = setTimeout(() => {
+      Reflect.defineProperty(e, "type", {
+        value: "wheelend",
         enumerable: false,
         configurable: false,
         writable: true,
       })
       callBack(e)
-      clearTimeout(st)
-      st = null
-      st = setTimeout(() => {
-        Reflect.defineProperty(e,"type",{
-          value:"wheelend",
-          enumerable: false,
-          configurable: false,
-          writable: true,
-        })
-        callBack(e)
-      }, 50)
-    })
-  }
+    }, 50)
+  })
+}
 
 //  hex 转rgb
-export function colorHextoRGBA(sHex:any, alpha:number = 1){
+export function colorHextoRGBA(sHex: any, alpha: number = 1) {
   // 十六进制颜色值的正则表达式
   var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/
   /* 16进制颜色转为RGB格式 */
@@ -255,33 +255,33 @@ export function colorHextoRGBA(sHex:any, alpha:number = 1){
     // 或
     return 'rgba(' + sColorChange.join(',') + ',' + alpha + ')'
   } else {
-    return sColor 
+    return sColor
   }
 }
 
 //rgb 转数组
-export function rgbaToArray(color:string){
+export function rgbaToArray(color: string) {
   let ret = [];
-	let colorStr = new RegExp(/(?<=\()\S+(?=\))/).exec(color); //校验是否为颜色值
-	if (colorStr) {
-		ret = colorStr[0].split(",");
-		ret = ret.map(item => {
-			return Number.parseFloat(item, 2);
-		});
-	}
+  let colorStr = new RegExp(/(?<=\()\S+(?=\))/).exec(color); //校验是否为颜色值
+  if (colorStr) {
+    ret = colorStr[0].split(",");
+    ret.map(item => {
+      return Number.parseFloat(item);
+    });
+  }
 
-	// if (normalized) {
-	// 	ret = ret.map(item => {
-	// 		return (item = +item / 255);
-	// 	});
-	// }
-	return ret;
+  // if (normalized) {
+  // 	ret = ret.map(item => {
+  // 		return (item = +item / 255);
+  // 	});
+  // }
+  return ret;
 }
-  
+
 
 //rgb 转 hex
-export function colorRGBtoHex(color:any) {
-  if(color.charAt(0) == '#'){
+export function colorRGBtoHex(color: any) {
+  if (color.charAt(0) == '#') {
     return color
   }
   var rgb = color.split(',');
@@ -300,3 +300,67 @@ export function arrayConvert(arr: [number]) {
   }
   return points
 }
+
+
+let _stage = window["_KMap"]["_Stage"]  //(window as any)._KMap_Stage
+/**
+ * @description 拖拽点吸附
+ * @param target 检测目标(当前识别的目标)
+ * @param layer 可选参数 碰撞检测图层，默认为Stage(搜索全局可拖拽锚点) 
+ */
+export function adsorb (target:any, layer:any = _stage) {
+  let targetAnchor = target.find("._drag_anchor") //当前正在编辑的图形节点内的拖拽锚点
+  
+  for (let item of targetAnchor) {
+    
+    item.on('dragend', function (e) { //拖拽锚点触发
+       e.cancelBubble = true;
+      let layerAnchor = layer.find("._drag_anchor")
+      for (let t of targetAnchor) {
+        layerAnchor.splice(layerAnchor.indexOf(t),1)
+      }
+      let tarRect = this.getClientRect();
+      for (let ar of layerAnchor) {
+        // if (ar === this) {
+        //   return;
+        // }
+        if (haveIntersection(ar.getClientRect(), tarRect)) { //进入目标碰撞监测范围
+          let arPos = ar.position()
+          let node = this.getParent() //获取父级图组  富信息图形节点
+          let line = node.findOne('._line') //线图形、主图
+          let anchor = node.find('._drag_anchor')
+
+          let pts = []
+          anchor.forEach((item, index, arr) => { //遍历当前图组中的锚点
+            if (item == this) {
+              //当前锚点与目标锚点一致时
+              var { x, y } = arPos
+            } else {
+              //当前锚点与目标锚点不一致时获取相对地图的绝对坐标位置
+              var { x, y } = item.getAbsolutePosition(node.getParent()) //获取图形节点相对于父级图组（图片的绝对位置）
+              pts.push(x, y)
+            }
+            pts.push(x, y)
+            item.position({ x, y }) //重置两个锚点为绝对位置
+          })
+          line.points(pts) //绘制图形
+          node.position({ x: 0, y: 0 }) //重置图组节点坐标为初始状态
+        }
+      }
+      // this.off('dragend')
+    })
+  }
+  //包围盒碰撞判定 缩小包围盒碰撞范围 / 4 缩小4倍
+  function haveIntersection(r1:any, r2:any,scope:number = 3) {
+    return !(
+      r2.x > r1.x + (r1.width / scope) ||
+      r2.x + (r2.width / scope) < r1.x ||
+      r2.y > r1.y + (r1.height / scope) ||
+      r2.y + (r2.height / scope) < r1.y
+    );
+  }
+}
+
+
+
+

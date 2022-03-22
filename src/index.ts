@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-21 15:30:30
  * @LastEditors: wjz
- * @LastEditTime: 2022-03-17 17:30:00
+ * @LastEditTime: 2022-03-22 15:58:55
  * @FilePath: /kmaps/src/index.ts
  */
 import Konva from './js/konva.min.js'
@@ -13,7 +13,7 @@ window["_KMap"]["_BaseMap_unpdata"] = [] //地图图片更新
 
 import Hammer from "./js/hammer-konva";
 
-import {wheelEvent,colorHextoRGBA} from "./_util"
+import {wheelEvent,colorHextoRGBA ,adsorb} from "./_util"
 
 import Stage from './Stage'
 import Layer from './Layer'
@@ -34,10 +34,11 @@ import Text from './Text';
 
 export default {
     Konva,
-    Hammer,
+    // Hammer,
     Util:{
         wheelEvent,
         colorHextoRGBA,
+        adsorb
     },
     Stage, //舞台
     Layer, //底层 图层
