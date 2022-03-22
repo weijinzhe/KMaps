@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2022-02-09 14:26:02
  * @LastEditors: wjz
- * @LastEditTime: 2022-03-22 18:32:51
+ * @LastEditTime: 2022-03-22 18:59:32
  * @FilePath: /kmaps/src/AnchorLine.ts
  */
 
@@ -198,16 +198,6 @@ export default class AnchorLine extends Konva.Group {
     //   })
     // } else {
     //   this.off("dragstart.—custom dragmove.—custom dragend.—custom touchstart.—custom touchmove.—custom touchend.—custom")
-    // }
-
-    // //拖拽吸附
-    // if (this.attrs.adsorb && this.attrs.draggable) {
-    //   adsorb(this, this._stage) //锚点拖拽吸附
-    // } else {
-    //   //移除 拖拽结束事件 关闭吸附功能
-    //   for (let item of this.find("._drag_anchor")) {
-    //     item.off('dragend')
-    //   }
     // }
     return param
   }
