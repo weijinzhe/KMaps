@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2022-02-09 14:26:02
  * @LastEditors: wjz
- * @LastEditTime: 2022-03-22 18:59:32
+ * @LastEditTime: 2022-03-24 11:15:21
  * @FilePath: /kmaps/src/AnchorLine.ts
  */
 
@@ -35,21 +35,22 @@ interface attrs {
 
 /**
  * @description 带有拖拽锚点的 Line 允许闭合为多边形
- * @param {String} id id
- * @param {String} name name
- * @param {Array} points 坐标点数据
- * @param {String} stroke 画笔颜色 仅初始化时可设置
- * @param {Number} strokeWidth 画笔宽度 仅初始化时可设置
- * @param {Number} hitStrokeWidth 点击识别范围 仅初始化时可设置
- * @param {String} fill 填充颜色
- * @param {Array} dash  虚线数组 详情参照konva.Line 仅初始化时可设置
- * @param {Boolean} closed 是否闭合图形 仅初始化时可设置
- * @param {Boolean} draggable 是否可拖拽 
- * @param {Boolean} anchor 是否绘制拖拽锚点 默认为true 仅初始化时可设置
- * @param {Boolean} anchorVisible 拖拽锚点是否显示默认 true, anchor 为true时有效 
+ * @param {Object} attrs 详情参数参考Konva.Circle
  * 
- * @param {Boolean} absoluteSize 绝对尺寸，与舞台一同缩放 默认true 仅初始化时可设置
- * @param {Boolean} adsorb 是否开启锚点吸附
+ * @param {String} attrs.id id 
+ * @param {String} attrs.name name
+ * @param {Array} attrs.points 坐标点数据
+ * @param {String} attrs.stroke 画笔颜色 仅初始化时可设置
+ * @param {Number} attrs.strokeWidth 画笔宽度 仅初始化时可设置
+ * @param {Number} attrs.hitStrokeWidth 点击识别范围 仅初始化时可设置
+ * @param {String} attrs.fill 填充颜色
+ * @param {Array} attrs.dash  虚线数组 详情参照konva.Line 仅初始化时可设置
+ * @param {Boolean} attrs.closed 是否闭合图形 仅初始化时可设置
+ * @param {Boolean} attrs.draggable 是否可拖拽 
+ * @param {Boolean} attrs.anchor 是否绘制拖拽锚点 默认为true 仅初始化时可设置
+ * @param {Boolean} attrs.anchorVisible 拖拽锚点是否显示默认 true, anchor 为true时有效 
+ * @param {Boolean} attrs.absoluteSize 绝对尺寸，与舞台一同缩放 默认true 仅初始化时可设置
+ * @param {Boolean} attrs.adsorb 是否开启锚点吸附
  * 
  * @example 
  * let node = new KMaps.AnchorLine({...})
@@ -62,11 +63,11 @@ export default class AnchorLine extends Konva.Group {
     super(attrs)
     this._strokeWidth = attrs.strokeWidth || 1//宽度默认为1
     this._hitStrokeWidth = attrs.hitStrokeWidth
-    // if(attrs.draggable){
-    this.on("dragstart.—custom dragmove.—custom dragend.—custom touchstart.—custom touchmove.—custom touchend.—custom", function (e: any) {
-      e.cancelBubble = true;//阻止事件冒泡
-    })
-    // }
+    if (attrs.draggable) {
+      this.on("dragstart.—custom dragmove.—custom dragend.—custom touchstart.—custom touchmove.—custom touchend.—custom", function (e: any) {
+        e.cancelBubble = true;//阻止事件冒泡
+      })
+    }
     this._stage = window["_KMap"]["_Stage"]  //(window as any)._KMap_Stage
     this._lineFun(attrs)
     if (attrs['anchor'] !== false) {
@@ -76,7 +77,6 @@ export default class AnchorLine extends Konva.Group {
     }
 
     let self: any = this
-
     let hammer = new Hammer(self, { //绑定事件
       domEvents: true,
       recognizers: [
@@ -111,7 +111,7 @@ export default class AnchorLine extends Konva.Group {
       adsorb(this, this._stage) //锚点拖拽吸附
     }
   }
-  _lineFun(attrs: any) {
+  private _lineFun(attrs: any) {
     if (!attrs.points) { return }
     let scale = this._stage.scale()
     // let rgb = attrs.stroke ? colorHextoRGBA(attrs.stroke, 0.5) : ""
@@ -146,7 +146,7 @@ export default class AnchorLine extends Konva.Group {
       }
     })
   }
-  _circleFun({ x, y }, index: number) {
+  private _circleFun({ x, y }, index: number) {
     let scale = this._stage.scale()
     let self = this
     let _anchor = new Konva.Circle({
@@ -162,7 +162,7 @@ export default class AnchorLine extends Konva.Group {
       visible: this.attrs.anchorVisible || false,//super.draggable() || false, //默认显示状态
       // visible: super.draggable() || false, //默认显示状态
 
-      draggable: true,
+      draggable: this.attrs.anchorVisible || false,
     })
     this.add(_anchor)
     _anchor.on("dragmove", function (e: any) {
@@ -175,6 +175,11 @@ export default class AnchorLine extends Konva.Group {
         points.push(x, y)
       }
       self._line.points(points)
+      
+      // _anchor.on("dragstart.—custom dragmove.—custom dragend.—custom touchstart.—custom touchmove.—custom touchend.—custom", function (e: any) {
+      //   e.cancelBubble = true;//阻止事件冒泡
+      // })
+
     })
   }
 
@@ -192,13 +197,13 @@ export default class AnchorLine extends Konva.Group {
     // }
 
     //防止事件冒泡，提前阻止，拖拽关闭后 移除
-    // if (param) {
-    //   this.on("dragstart.—custom dragmove.—custom dragend.—custom touchstart.—custom touchmove.—custom touchend.—custom", function (e: any) {
-    //     e.cancelBubble = true;//阻止事件冒泡
-    //   })
-    // } else {
-    //   this.off("dragstart.—custom dragmove.—custom dragend.—custom touchstart.—custom touchmove.—custom touchend.—custom")
-    // }
+    if (param) {
+      this.on("dragstart.—custom dragmove.—custom dragend.—custom touchstart.—custom touchmove.—custom touchend.—custom", function (e: any) {
+        e.cancelBubble = true;//阻止事件冒泡
+      })
+    } else {
+      this.off("dragstart.—custom dragmove.—custom dragend.—custom touchstart.—custom touchmove.—custom touchend.—custom")
+    }
     return param
   }
   /**
@@ -241,12 +246,23 @@ export default class AnchorLine extends Konva.Group {
    * 
    */
   anchorVisible(param: boolean) {
-    if (!arguments.length) { return this.attrs.anchorVisible || false}
+    if (!arguments.length) { return this.attrs.anchorVisible || false }
     this.attrs.anchorVisible = param
     let anchorArr = this.find("._drag_anchor")
     for (let item of anchorArr) {
       item.visible(param)
+      item.draggable(param)
+      if (param) {
+        item.on("dragstart.—custom dragmove.—custom dragend.—custom touchstart.—custom touchmove.—custom touchend.—custom", function (e: any) {
+          e.cancelBubble = true;//阻止事件冒泡
+        })
+      } else {
+        item.off("dragstart.—custom dragmove.—custom dragend.—custom touchstart.—custom touchmove.—custom touchend.—custom")
+      }
     }
+
+    
+
     return param
   }
   /**
@@ -297,16 +313,13 @@ export default class AnchorLine extends Konva.Group {
   }
   /**
    * @description 锚点吸附
-   * @param {boolean} obj json格式详情参考 Konva
+   * @param {boolean} param json格式详情参考 Konva
    * @returns 克隆后的节点
    */
-  adsorb(param?:boolean){
-
-    if (!arguments.length) { return this.attrs.adsorb || false}
+  adsorb(param?: boolean) {
+    if (!arguments.length) { return this.attrs.adsorb || false }
     if (param && this.attrs.adsorb !== true) {
       adsorb(this, this._stage) //锚点拖拽吸附
-      console.log(param);
-      
       this.attrs.adsorb = param
     } else {
       //移除 拖拽结束事件 关闭吸附功能

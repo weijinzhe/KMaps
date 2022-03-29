@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-11-22 16:45:13
  * @LastEditors: wjz
- * @LastEditTime: 2022-03-22 15:13:02
+ * @LastEditTime: 2022-03-23 15:59:51
  * @FilePath: /kmaps/src/Circle.ts
  */
 
@@ -18,17 +18,16 @@ interface attrs {
  * @description 圆图形
  * @constructor
  * @class
- * @extends Konva.Circle
- * 
- * @param {number} x x轴坐标位置
- * @param {number} y y轴坐标位置
- * @param {number} radius 点的直径大小
- * @param {number} fill 填充颜色
- * @param {number} shadowBlur 阴影范围、可选参数
- * @param {number} shadowColor 阴影颜色、可选参数
+ * @extends Konva.Circle 
+ * @param {Object} attrs  详情参数参考Konva.Circle
+ * @param {number} attrs.x x轴坐标位置
+ * @param {number} attrs.y y轴坐标位置
+ * @param {number} attrs.radius 点的直径大小
+ * @param {number} attrs.fill 填充颜色
+ * @param {number} attrs.shadowBlur 阴影范围、可选参数
+ * @param {number} attrs.shadowColor 阴影颜色、可选参数
  * 
  * @example
- * 
  * let  node = new Circle(attrs)
  */
 export default class Circle extends Konva.Circle {

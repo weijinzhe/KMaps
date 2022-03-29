@@ -1,3 +1,10 @@
+/*
+ * @Author: wjz
+ * @Date: 2021-12-03 11:23:29
+ * @LastEditors: wjz
+ * @LastEditTime: 2022-03-23 15:51:38
+ * @FilePath: /kmaps/src/konva/Group.ts
+ */
 import { Util } from './Util';
 import { Container } from './Container';
 import { _registerNode } from './Global';

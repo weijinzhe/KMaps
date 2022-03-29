@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-19 20:35:58
  * @LastEditors: wjz
- * @LastEditTime: 2022-03-22 18:57:37
+ * @LastEditTime: 2022-03-25 17:16:31
  * @FilePath: /kmaps/test/index.html
 -->
 <!DOCTYPE html>
@@ -72,7 +72,7 @@
     let locationGroup = new KMaps.Group({ id: "locationGroup" }) //定位层
     let grid = new KMaps.Grid({ grid: 60 })// 创建网格层
     let loc = new KMaps.Location({
-      themeColor: "rgb(255,0,0)",
+      themeColor:"rgb(255,0,0)",
       x: 300,
       y: 300,
       angle: 40
@@ -163,7 +163,7 @@
 
     // 锚点拖拽线 封装
     let anchor_Line = new KMaps.AnchorLine({
-      id: "aaa",
+      id: "123",
       points: [[100, 200], [100, 500]],
       stroke: "#fc0a07",
       strokeWidth: 3,
@@ -200,18 +200,20 @@
     // 锚点拖拽线 封装
     let anchor_Line2 = new KMaps.AnchorLine({
       id: "aaa",
-      points: [[200, 200], [200, 500]],
+      points: [[200, 200], [200, 500] ,[500, 500]],
       stroke: "#aa9a07",
       strokeWidth: 3,
       hitStrokeWidth: 20,
       anchorVisible: false,
       draggable: false,
-      lineCap:"round"
+      lineCap:"round",
+      lineJoin:"round",
+      closed:true,
       // adsorb:true
       // dash: [33, 10],
     })
 
-    anchor_Line2.on("click tap", function (e) {
+    anchor_Line2.on("click tap ", function (e) {
       e.cancelBubble = true;
         if (!this.draggable()) {
           // console.log(anchor_Line.clone());

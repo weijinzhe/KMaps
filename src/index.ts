@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-21 15:30:30
  * @LastEditors: wjz
- * @LastEditTime: 2022-03-22 15:58:55
+ * @LastEditTime: 2022-03-23 15:38:27
  * @FilePath: /kmaps/src/index.ts
  */
 import Konva from './js/konva.min.js'
@@ -11,7 +11,7 @@ window["_KMap"] = {};
 window["_KMap"]["_BaseMap_unpdata"] = [] //地图图片更新
 
 
-import Hammer from "./js/hammer-konva";
+// import Hammer from "./js/hammer-konva";
 
 import {wheelEvent,colorHextoRGBA ,adsorb} from "./_util"
 

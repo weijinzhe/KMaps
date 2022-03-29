@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-29 11:10:22
  * @LastEditors: wjz
- * @LastEditTime: 2022-03-22 15:20:53
+ * @LastEditTime: 2022-03-23 16:06:26
  * @FilePath: /kmaps/src/Location.ts
  */
 
@@ -14,6 +14,15 @@ interface pos {
   x: number,
   y: number,
   angle: number
+  themeColor?:number
+}
+
+
+
+//默认属性
+let defaultAttrs:any = {
+  id:"Location",
+  themeColor:"#F00000"
 }
 
 /**
@@ -22,10 +31,17 @@ interface pos {
  * @constructor
  * @extends Konva.Group
  * 
+ * @param {Object} attrs  自定义封装
+ * @param {String} attrs.themeColor  定位点主题颜色 ，拖拽范围背景为当前颜色的反向颜色
+ * @param {Number} attrs.x   默认x轴坐标
+ * @param {Number} attrs.y   默认y轴坐标
+ * @param {Number} attrs.angle   默认方向 角度 >= 360°
  */
+
 export default class Location extends Konva.Group {
-  constructor(attrs: object = {}) {
-    attrs["id"] = "Location"
+  constructor(attrs:pos) {
+    // attrs["id"] = "Location"
+    attrs = Object.assign(defaultAttrs,attrs)
     super(attrs)
     this._drawstate = false
     this._stage = window["_KMap"]["_Stage"] //(window as any)._KMap_Stage
@@ -36,7 +52,7 @@ export default class Location extends Konva.Group {
     this.drawGraph()
   }
   //绘制定位图形
-  drawGraph() {
+  private drawGraph() {
     this._drawstate = true
     const self = this
     let attrs = this.attrs
@@ -211,6 +227,15 @@ export default class Location extends Konva.Group {
     super.draggable(param)
     this._drag_group.visible(param)
     this._scope.visible(!param)
+
+
+    if (param) {
+      this.on("dragstart.—custom dragmove.—custom dragend.—custom touchstart.—custom touchmove.—custom touchend.—custom", function (e: any) {
+        e.cancelBubble = true;//阻止事件冒泡
+      })
+    } else {
+      this.off("dragstart.—custom dragmove.—custom dragend.—custom touchstart.—custom touchmove.—custom touchend.—custom")
+    }
     return super.draggable()
   }
   /**
