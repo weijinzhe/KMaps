@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2022-02-09 14:26:02
  * @LastEditors: wjz
- * @LastEditTime: 2022-03-24 11:15:21
+ * @LastEditTime: 2022-03-30 16:33:25
  * @FilePath: /kmaps/src/AnchorLine.ts
  */
 
@@ -10,9 +10,11 @@
 import Konva from "./js/konva.min";
 
 
-import { arrayConvert, adsorb } from './_util'
+import { arrayConvert ,adsorb} from './_util'
 
-import Hammer from "./js/hammer-konva"
+// import Hammer from "./js/hammer-konva"
+
+
 
 interface attrs {
   id: string, //id
@@ -75,16 +77,20 @@ export default class AnchorLine extends Konva.Group {
         this._circleFun({ x: _item[0], y: _item[1] }, _index)
       });
     }
+    //锚点拖拽吸附
+    if (this.attrs.adsorb) {
+      adsorb(this, this._stage) 
+    }
 
     let self: any = this
-    let hammer = new Hammer(self, { //绑定事件
-      domEvents: true,
-      recognizers: [
-        [Hammer["Press"], {
-          time: 500 //长按响应时间
-        }]
-      ]
-    });
+    // let hammer = new Hammer(self, { //绑定事件
+    //   domEvents: true,
+    //   recognizers: [
+    //     [Hammer["Press"], {
+    //       time: 500 //长按响应时间
+    //     }]
+    //   ]
+    // });
 
     //缩放事件监听
     this._stage.addEventListener("scaleend setscale", function (e: any) {
@@ -107,44 +113,47 @@ export default class AnchorLine extends Konva.Group {
         })
       }
     })
-    if (attrs.adsorb) {
-      adsorb(this, this._stage) //锚点拖拽吸附
-    }
+
   }
   private _lineFun(attrs: any) {
     if (!attrs.points) { return }
     let scale = this._stage.scale()
     // let rgb = attrs.stroke ? colorHextoRGBA(attrs.stroke, 0.5) : ""
     // let _points = arrayConvert(attrs.points)
-    let con = JSON.parse(JSON.stringify(attrs))
-
-    con.points = arrayConvert(attrs.points)
-    con.strokeWidth = (attrs.strokeWidth || 1) / scale.x
-    con.draggable = false
-    delete con.id, delete con.name;
-
-    let _line = new Konva.Line({
+    let config = JSON.parse(JSON.stringify(attrs))
+    let ats = Object.assign(config,{
       id: `_line`,
       name: "_line",
-      ...con,
       x: 0,
-      y: 0
-      // points: _points,
-      // closed: attrs.closed,
-      // stroke: attrs.stroke,//colorRGBtoHex(attrs.stroke), // rgb转16位颜色值
-      // fill: attrs.fill,//rgb,
-      // strokeWidth: (attrs.strokeWidth|| 1 ) / scale.x,
-      // hitStrokeWidth: attrs.hitStrokeWidth, //自定义图形选取范围 
-      // dash:attrs.dash,
+      y: 0,
+      points:arrayConvert(config.points),
+      draggable:false,
+      strokeWidth:(config.strokeWidth || 1) / scale.x,
     })
+    let _line = new Konva.Line(ats)
     this.add(_line)
     this._line = _line
-    this._line = new Proxy(_line, { //监听图片绘制变化，调用图形坐标重置
-      set: (target, propKey, value, receiver) => {
-        this._line.position({ x: 0, y: 0 })
-        return Reflect.set(target, propKey, value, receiver);
-      }
-    })
+    // this._line = new Proxy(_line, { //监听图片绘制变化，调用图形坐标重置
+    //   set: (target, propKey, value, receiver) => {
+    //     this._line.position({ x: 0, y: 0 })
+    //     return Reflect.set(target, propKey, value, receiver);
+    //   }
+    // })
+  }
+  /**
+   * @description 虚线参数设置
+   * 
+   * @example 
+   * 应用10像素长，间隔5像素的虚线描边
+   * line.dash([10, 5]);
+   * //应用由交替虚线组成的虚线描边
+   * //10像素长，20像素宽的线，还有点
+   * //半径为5px，相距20px
+   * line.dash([10, 20, 0.001, 20]);
+   */
+  dash(arr: Array<number>) {
+    this._line.dash(arr)
+    this.attrs.dash = arr
   }
   private _circleFun({ x, y }, index: number) {
     let scale = this._stage.scale()
@@ -165,22 +174,22 @@ export default class AnchorLine extends Konva.Group {
       draggable: this.attrs.anchorVisible || false,
     })
     this.add(_anchor)
-    _anchor.on("dragmove", function (e: any) {
-      // console.log(this.attrs.x);
+    _anchor.on("dragstart.—custom dragmove.—custom dragend.—custom touchstart.—custom touchmove.—custom touchend.—custom", function (e: any) {
       e.cancelBubble = true;
-      let points = [] //拖拽锚点当前坐标
-      let anchorArr = self.find("._drag_anchor")
-      for (let item of anchorArr) {
-        let { x, y } = item.position()
-        points.push(x, y)
+      if(e.type == "dragmove"){
+        let points = [] //拖拽锚点当前坐标
+        let anchorArr = self.find("._drag_anchor")
+        for (let item of anchorArr) {
+          let { x, y } = item.position()
+          points.push(x, y)
+        }
+        self._line.points(points)
       }
-      self._line.points(points)
       
-      // _anchor.on("dragstart.—custom dragmove.—custom dragend.—custom touchstart.—custom touchmove.—custom touchend.—custom", function (e: any) {
-      //   e.cancelBubble = true;//阻止事件冒泡
-      // })
-
     })
+    
+
+    return _anchor
   }
 
   /**
@@ -214,11 +223,18 @@ export default class AnchorLine extends Konva.Group {
   addPoints(points: [number, number]) {
     //添加拖拽锚点
     let index = super.find("._drag_anchor").length //锚点序号index
-    this._circleFun({ x: points[0], y: points[1] }, index)
-    if (!this.attrs.anchor) { return }
+    let pos = this.position()
+    if (this.attrs.anchor) { 
+      let ar = this._circleFun({ x: points[0]-pos.x, y: points[1] -pos.y}, index)
+      if (this.attrs.adsorb) {
+        adsorb(this, this._stage) //锚点拖拽吸附
+      }
+    }
     let line = this._line.points()
-    line.push(points[0], points[1])
+    line.push(points[0]-pos.x, points[1]-pos.y)
     this._line.points(line)
+    this._line.dash(this.attrs.dash || [])
+
     return this
   }
   /**
@@ -252,13 +268,13 @@ export default class AnchorLine extends Konva.Group {
     for (let item of anchorArr) {
       item.visible(param)
       item.draggable(param)
-      if (param) {
-        item.on("dragstart.—custom dragmove.—custom dragend.—custom touchstart.—custom touchmove.—custom touchend.—custom", function (e: any) {
-          e.cancelBubble = true;//阻止事件冒泡
-        })
-      } else {
-        item.off("dragstart.—custom dragmove.—custom dragend.—custom touchstart.—custom touchmove.—custom touchend.—custom")
-      }
+      // if (param) {
+      //   item.on("dragstart.—custom dragmove.—custom dragend.—custom touchstart.—custom touchmove.—custom touchend.—custom", function (e: any) {
+      //     e.cancelBubble = true;//阻止事件冒泡
+      //   })
+      // } else {
+      //   item.off("dragstart.—custom dragmove.—custom dragend.—custom touchstart.—custom touchmove.—custom touchend.—custom")
+      // }
     }
 
     
@@ -278,41 +294,32 @@ export default class AnchorLine extends Konva.Group {
     })
   }
   /**
-   * @description 获取锚点数组
+   * @description 获取锚点数组，参数传入锚点对象 #id .class 不传默认返回所有拖拽锚点的数组
+   * @param {string} selector 选择器
    * @returns {Array} anchor 节点对象
    */
-  getAnchor() {
+  getAnchor(selector:any): Array<any> | any{
+    if(selector){
+      return this.findOne(selector)
+    }
     return this.find("._drag_anchor")
   }
   /**
    * @description 克隆对象
    * @override
-   * @param {object} obj json格式详情参考 Konva
+   * @param {object} object json格式详情参考 Konva
    * @returns 克隆后的节点
    */
-  clone(obj: any = {}) {
+  clone(object: any = {}) {
     let points = this.getPoints() //获取当前最新锚点坐标位置数组
-    let _obj = Object.assign({ points }, obj) //与传入的参数合并，覆盖
+    let _obj = Object.assign({ points }, object) //与传入的参数合并，覆盖
     var node = Konva.Node.prototype.clone.call(this, _obj);
     node.position({ x: 0, y: 0 })
     return node;
   }
+  
   /**
-   * @description 虚线参数设置
-   * 
-   * @example 
-   * 应用10像素长，间隔5像素的虚线描边
-   * line.dash([10, 5]);
-   * //应用由交替虚线组成的虚线描边
-   * //10像素长，20像素宽的线，还有点
-   * //半径为5px，相距20px
-   * line.dash([10, 20, 0.001, 20]);
-   */
-  dash(arr: Array<number>) {
-    this._line.dash(arr)
-  }
-  /**
-   * @description 锚点吸附
+   * @description 是否允许锚点吸附 
    * @param {boolean} param json格式详情参考 Konva
    * @returns 克隆后的节点
    */
@@ -321,7 +328,7 @@ export default class AnchorLine extends Konva.Group {
     if (param && this.attrs.adsorb !== true) {
       adsorb(this, this._stage) //锚点拖拽吸附
       this.attrs.adsorb = param
-    } else {
+    } else if(param == false){
       //移除 拖拽结束事件 关闭吸附功能
       for (let item of this.find("._drag_anchor")) {
         item.off('dragend')
@@ -332,3 +339,6 @@ export default class AnchorLine extends Konva.Group {
     return param
   }
 }
+
+
+

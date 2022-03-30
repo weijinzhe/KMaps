@@ -120,6 +120,7 @@ export function arrayConvert(arr: [number]) {
 export function adsorb (target:any, layer:any) {
   let targetAnchor = target.find("._drag_anchor") //当前正在编辑的图形节点内的拖拽锚点
   for (let item of targetAnchor) {
+    item.off('dragend') //先解除绑定事件防止重复绑定
     item.on('dragend', function (e) { //拖拽锚点触发
        e.cancelBubble = true;
       let layerAnchor = layer.find("._drag_anchor")

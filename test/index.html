@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-19 20:35:58
  * @LastEditors: wjz
- * @LastEditTime: 2022-03-25 17:16:31
+ * @LastEditTime: 2022-03-30 15:28:10
  * @FilePath: /kmaps/test/index.html
 -->
 <!DOCTYPE html>
@@ -89,13 +89,18 @@
     baseLayer.add(baseMap, pathGroup, trackGroup, grid, shapeGroup, circleGroup, locationGroup)
 
     //拖拽 缩放隐藏元素 提高性能
-    stage.on("dragstart dragend scalestart scaleend", function (e) {
-      e.cancelBubble = true;
+    stage.on("dragstart dragend scalestart scaleend click tap", function (e) {
+      // e.cancelBubble = true;
       if (e.type == "dragend" || e.type == "scaleend") {
         shapeGroup.visible(true)
       } else if (e.type == "dragstart" || e.type == "scalestart") {
         shapeGroup.visible(false)
+      }else if(e.type == "click" || e.type == "tap"){
+        let pos = baseMap.relativePosition(this.getPointerPosition()) //坐标系数据转换
+        anchor_Line2.dash([10,5])
+        anchor_Line2.addPoints([pos.x,pos.y])
       }
+      console.log(e);
     })
 
     //敲击事件
@@ -164,19 +169,21 @@
     // 锚点拖拽线 封装
     let anchor_Line = new KMaps.AnchorLine({
       id: "123",
-      points: [[100, 200], [100, 500]],
+      points: [[100, 200], [100, 500],[300, 700] ,[500, 500]],
       stroke: "#fc0a07",
       strokeWidth: 3,
       hitStrokeWidth: 20,
       anchorVisible: false,
       draggable: false,
-      // dash: [33, 10],
+      dash: [10, 5],
+      closed:true,
+      adsorb:true,
+
     })
 
     anchor_Line.on("click tap ", function (e) {
       // console.log(e);
       e.cancelBubble = true;
-      // if(!this.draggable()){
       if (!this.draggable()) {
         // console.log(anchor_Line.clone());
         // let ce = this.clone()
@@ -200,21 +207,22 @@
     // 锚点拖拽线 封装
     let anchor_Line2 = new KMaps.AnchorLine({
       id: "aaa",
-      points: [[200, 200], [200, 500] ,[500, 500]],
+      points: [],//[[200, 200], [200, 500] ,[500, 500]],
       stroke: "#aa9a07",
       strokeWidth: 3,
       hitStrokeWidth: 20,
-      anchorVisible: false,
-      draggable: false,
+      anchorVisible: true,
+      draggable: true,
       lineCap:"round",
       lineJoin:"round",
-      closed:true,
-      // adsorb:true
+      // closed:true,
+      adsorb:true,
       // dash: [33, 10],
     })
 
-    anchor_Line2.on("click tap ", function (e) {
+    anchor_Line2.on("click tap", function (e) {
       e.cancelBubble = true;
+      console.log(this.getPoints());
         if (!this.draggable()) {
           // console.log(anchor_Line.clone());
           let ce = this.clone()
@@ -222,7 +230,7 @@
           this.anchorVisible(true)
           this.adsorb(true)
 
-          this.dash([10, 8])
+          // this.dash([10, 8])
           
           // shapeGroup.add(ce)
           this.moveToTop()
@@ -232,12 +240,11 @@
         } else {
           this.draggable(false)
           // this.anchorVisible(false)
-          this.adsorb(false)
+          // this.adsorb(false)
           this.dash([])
         }
         targetShape = this
     })
-
 
     shapeGroup.add(anchor_Line, anchor_Line2)
 

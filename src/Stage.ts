@@ -2,10 +2,11 @@
  * @Author: wjz
  * @Date: 2021-10-22 14:14:27
  * @LastEditors: wjz
- * @LastEditTime: 2022-03-24 19:27:53
+ * @LastEditTime: 2022-03-30 13:50:32
  * @FilePath: /kmaps/src/Stage.ts
  */
 import Konva from "./js/konva.min.js"
+// import {Stage as Stages} from "./konva/Stage"
 
 // import { dragBoundFunc, Hammer } from './_util'
 import Hammers from './js/hammer-konva.js'
@@ -58,8 +59,8 @@ export default class Stage extends Konva.Stage {
      * @returns {x,y} 返回当前舞台中心对应在画布上的坐标位置（已转换缩放问题）
      */
     centre() {
-      let {px,py} = this.position() //当前坐标
-      let scale = this.scaleX() //x,y同时缩放的，获取其一即可
+      let {px,py}:any = this.position() //当前坐标
+      let scale:any = this.scaleX() //x,y同时缩放的，获取其一即可
       let x = (this.attrs.width / 2 - px) / scale,
           y = (this.attrs.height / 2 - py) / scale;
       return{x,y}
