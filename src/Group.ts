@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-11-12 11:02:13
  * @LastEditors: wjz
- * @LastEditTime: 2022-03-22 18:34:45
+ * @LastEditTime: 2022-04-06 15:03:48
  * @FilePath: /kmaps/src/Group.ts
  */
 import Konva from "./js/konva.min.js"
@@ -34,6 +34,9 @@ export default class Group extends Konva.Group {
     if(!this.attrs.awaitMap){return}
     let {x,y} = map.attrs
     this.position({x,y})
+    // this.offsetX(x*-1)
+    // this.offsetY(y*-1)
+
   }
   /**
    * @description 添加子节点元素，参数顺序为节点图层排列顺序

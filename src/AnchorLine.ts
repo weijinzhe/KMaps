@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2022-02-09 14:26:02
  * @LastEditors: wjz
- * @LastEditTime: 2022-03-30 16:33:25
+ * @LastEditTime: 2022-04-06 16:11:56
  * @FilePath: /kmaps/src/AnchorLine.ts
  */
 
@@ -130,6 +130,7 @@ export default class AnchorLine extends Konva.Group {
       draggable:false,
       strokeWidth:(config.strokeWidth || 1) / scale.x,
     })
+    // console.log('object :>> ', ats);
     let _line = new Konva.Line(ats)
     this.add(_line)
     this._line = _line
@@ -222,10 +223,10 @@ export default class AnchorLine extends Konva.Group {
    */
   addPoints(points: [number, number]) {
     //添加拖拽锚点
-    let index = super.find("._drag_anchor").length //锚点序号index
+    let anchor = super.find("._drag_anchor") //锚点序号index
     let pos = this.position()
     if (this.attrs.anchor) { 
-      let ar = this._circleFun({ x: points[0]-pos.x, y: points[1] -pos.y}, index)
+      let ar = this._circleFun({ x: points[0]-pos.x, y: points[1] -pos.y}, anchor.length)
       if (this.attrs.adsorb) {
         adsorb(this, this._stage) //锚点拖拽吸附
       }
@@ -233,8 +234,7 @@ export default class AnchorLine extends Konva.Group {
     let line = this._line.points()
     line.push(points[0]-pos.x, points[1]-pos.y)
     this._line.points(line)
-    this._line.dash(this.attrs.dash || [])
-
+    this.attrs.points = this.getPoints()
     return this
   }
   /**
@@ -251,7 +251,7 @@ export default class AnchorLine extends Konva.Group {
     // points.splice(index,1)
     this._line.points(arrayConvert(points))
     //获取需要移除的锚点对象
-
+    this.attrs.points = this.getPoints()
     return this
   }
 

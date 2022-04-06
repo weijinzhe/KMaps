@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-19 20:35:58
  * @LastEditors: wjz
- * @LastEditTime: 2022-03-30 15:28:10
+ * @LastEditTime: 2022-03-31 16:36:56
  * @FilePath: /kmaps/test/index.html
 -->
 <!DOCTYPE html>
@@ -72,7 +72,7 @@
     let locationGroup = new KMaps.Group({ id: "locationGroup" }) //定位层
     let grid = new KMaps.Grid({ grid: 60 })// 创建网格层
     let loc = new KMaps.Location({
-      themeColor:"rgb(255,0,0)",
+      themeColor: "rgb(255,0,0)",
       x: 300,
       y: 300,
       angle: 40
@@ -95,10 +95,10 @@
         shapeGroup.visible(true)
       } else if (e.type == "dragstart" || e.type == "scalestart") {
         shapeGroup.visible(false)
-      }else if(e.type == "click" || e.type == "tap"){
+      } else if (e.type == "click" || e.type == "tap") {
         let pos = baseMap.relativePosition(this.getPointerPosition()) //坐标系数据转换
-        anchor_Line2.dash([10,5])
-        anchor_Line2.addPoints([pos.x,pos.y])
+        anchor_Line2.dash([10, 5])
+        anchor_Line2.addPoints([pos.x, pos.y])
       }
       console.log(e);
     })
@@ -169,15 +169,15 @@
     // 锚点拖拽线 封装
     let anchor_Line = new KMaps.AnchorLine({
       id: "123",
-      points: [[100, 200], [100, 500],[300, 700] ,[500, 500]],
+      points: [[100, 200], [100, 500], [300, 700], [500, 500]],
       stroke: "#fc0a07",
       strokeWidth: 3,
       hitStrokeWidth: 20,
       anchorVisible: false,
       draggable: false,
       dash: [10, 5],
-      closed:true,
-      adsorb:true,
+      closed: true,
+      adsorb: true,
 
     })
 
@@ -213,41 +213,58 @@
       hitStrokeWidth: 20,
       anchorVisible: true,
       draggable: true,
-      lineCap:"round",
-      lineJoin:"round",
+      lineCap: "round",
+      lineJoin: "round",
       // closed:true,
-      adsorb:true,
+      adsorb: true,
       // dash: [33, 10],
     })
 
     anchor_Line2.on("click tap", function (e) {
       e.cancelBubble = true;
       console.log(this.getPoints());
-        if (!this.draggable()) {
-          // console.log(anchor_Line.clone());
-          let ce = this.clone()
-          this.draggable(true)
-          this.anchorVisible(true)
-          this.adsorb(true)
+      if (!this.draggable()) {
+        // console.log(anchor_Line.clone());
+        let ce = this.clone()
+        this.draggable(true)
+        this.anchorVisible(true)
+        this.adsorb(true)
 
-          // this.dash([10, 8])
-          
-          // shapeGroup.add(ce)
-          this.moveToTop()
+        // this.dash([10, 8])
 
-          // anchor_Line.removePoints(2) //添加锚点
+        // shapeGroup.add(ce)
+        this.moveToTop()
 
-        } else {
-          this.draggable(false)
-          // this.anchorVisible(false)
-          // this.adsorb(false)
-          this.dash([])
-        }
-        targetShape = this
+        // anchor_Line.removePoints(2) //添加锚点
+
+      } else {
+        this.draggable(false)
+        // this.anchorVisible(false)
+        // this.adsorb(false)
+        this.dash([])
+      }
+      targetShape = this
     })
 
     shapeGroup.add(anchor_Line, anchor_Line2)
+    document.querySelector(".shape").addEventListener('click', () => {
+      let anchor_Line2 = new KMaps.AnchorLine({
+        id: "aaa",
+        points: [[200, 200], [200, 500], [500, 500]],
+        stroke: "#aa9a07",
+        strokeWidth: 3,
+        hitStrokeWidth: 20,
+        anchorVisible: true,
+        draggable: true,
+        lineCap: "round",
+        lineJoin: "round",
+        // closed:true,
+        adsorb: true,
+        dash: [10, 5],
+      })
+      shapeGroup.add(anchor_Line2)
 
+    })
   </script>
 </body>
 
