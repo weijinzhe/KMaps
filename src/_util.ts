@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-22 16:20:15
  * @LastEditors: wjz
- * @LastEditTime: 2022-04-08 14:20:58
+ * @LastEditTime: 2022-04-08 17:15:53
  * @FilePath: /kmaps/src/_util.ts
  */
 
@@ -133,13 +133,15 @@ export function adsorb (target:any, layer:any) {
 
       let tarRect = this.getClientRect();
       for (let ar of layerAnchor) {
-        if(ar == this ) return
+        if(ar == this ) continue
         if (haveIntersection(ar.getClientRect(), tarRect)) { //进入目标碰撞监测范围
           if(this.getParent() == ar.getParent()){ //图形自身锚点
+            
             if(ta.length <=2){return}
-            if(ta.indexOf(this) !== 0 && ta.indexOf(this) !== (ta.length-1)){
-              return
-            }
+            // if(ta.indexOf(this) !== 0 && ta.indexOf(this) !== (ta.length-1)){
+            if(ta.indexOf(this) >0 && ta.indexOf(this) < ta.length-1){ return }
+            if(ta.indexOf(ar) !==0 && ta.indexOf(ar) !== ta.length-1){ return }
+
             if(this.getParent().attrs.closed){return}
           }
 
