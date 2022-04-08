@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-22 16:20:15
  * @LastEditors: wjz
- * @LastEditTime: 2022-03-24 19:26:29
+ * @LastEditTime: 2022-04-08 14:20:58
  * @FilePath: /kmaps/src/_util.ts
  */
 
@@ -123,14 +123,26 @@ export function adsorb (target:any, layer:any) {
     item.off('dragend') //先解除绑定事件防止重复绑定
     item.on('dragend', function (e) { //拖拽锚点触发
        e.cancelBubble = true;
+      let ta = target.find("._drag_anchor") //当前正在编辑的图形节点内的拖拽锚点
       let layerAnchor = layer.find("._drag_anchor")
-      for (let t of targetAnchor) {
-        layerAnchor.splice(layerAnchor.indexOf(t),1)
-      }
+      // for (let t of targetAnchor) {
+      //   let index = layerAnchor.indexOf(t)
+      //   layerAnchor.splice(index,1)
+
+      // }
+
       let tarRect = this.getClientRect();
       for (let ar of layerAnchor) {
-        
+        if(ar == this ) return
         if (haveIntersection(ar.getClientRect(), tarRect)) { //进入目标碰撞监测范围
+          if(this.getParent() == ar.getParent()){ //图形自身锚点
+            if(ta.length <=2){return}
+            if(ta.indexOf(this) !== 0 && ta.indexOf(this) !== (ta.length-1)){
+              return
+            }
+            if(this.getParent().attrs.closed){return}
+          }
+
           let arPos = ar.getAbsolutePosition(ar.getParent().getParent())
           let node = this.getParent() //获取父级图组  富信息图形节点
           let line = node.findOne('._line') //线图形、主图
