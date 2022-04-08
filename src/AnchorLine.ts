@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2022-02-09 14:26:02
  * @LastEditors: wjz
- * @LastEditTime: 2022-04-08 15:05:17
+ * @LastEditTime: 2022-04-08 15:52:34
  * @FilePath: /kmaps/src/AnchorLine.ts
  */
 
@@ -166,7 +166,7 @@ export default class AnchorLine extends Konva.Group {
       scale: { x: 1 / scale.x, y: 1 / scale.y },
       radius: 20,
       fill: 'rgba(255,255,255,0.6)',
-      stroke: "rgba(0,255,50,1)",//'#00aaff',
+      stroke: "rgba(0,200,100,1)",//'#00aaff',
       strokeWidth: 2,
       hitStrokeWidth: this.attrs.hitStrokeWidth, //自定义图形选取范围 
       visible: this.attrs.anchorVisible || false,//super.draggable() || false, //默认显示状态
@@ -175,9 +175,10 @@ export default class AnchorLine extends Konva.Group {
       draggable: this.attrs.anchorVisible || false,
     })
     this.add(_anchor)
-
-    this.findOne(`#_drag_anchor-${index-1}`).stroke("#00aaff")
-
+    if(index){
+      this.findOne(`#_drag_anchor-${index-1}`).stroke("#00aaff")
+    }
+    
     _anchor.on("dragstart.—custom dragmove.—custom dragend.—custom touchstart.—custom touchmove.—custom touchend.—custom", function (e: any) {
       e.cancelBubble = true;
       if(e.type == "dragmove"){
