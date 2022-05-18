@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-22 14:14:27
  * @LastEditors: wjz
- * @LastEditTime: 2022-03-30 13:50:32
+ * @LastEditTime: 2022-04-18 14:44:30
  * @FilePath: /kmaps/src/Stage.ts
  */
 import Konva from "./js/konva.min.js"

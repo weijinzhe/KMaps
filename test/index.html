@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-19 20:35:58
  * @LastEditors: wjz
- * @LastEditTime: 2022-04-08 09:40:27
+ * @LastEditTime: 2022-04-19 15:13:22
  * @FilePath: /kmaps/test/index.html
 -->
 <!DOCTYPE html>
@@ -30,6 +30,17 @@
       left: 20px;
       z-index: 1000;
     }
+    .Magnifying{
+      position: absolute;
+      top: 50px;
+      left: 20px;
+      z-index: 1000;
+      /* width: 100px;
+      height: 100px; */
+      /* background-color: aqua; */
+      /* border-radius: 50%;
+      overflow: hidden; */
+    }
   </style>
 </head>
 
@@ -39,11 +50,14 @@
     <button class="loc" type="button">定位拖拽</button>
     <button class="shape" type="button">富信息编辑</button>
   </div>
+  <!-- <image class="image"></image> -->
+  <div class="Magnifying">
+    <image class="image"></image>
+  </div>
 
-
-  <script src="../lib/KMaps.js"></script>
+  <!-- <script src="../lib/KMaps.js"></script> -->
   <script type="module">
-    import { bezierData } from './util.js'
+    // import { bezierData } from './util.js'
 
     import KMaps from '../src/index.ts'
     import img from './assets/map2.png'
@@ -87,20 +101,23 @@
     trackGroup.add(track)
 
     baseLayer.add(baseMap, pathGroup, trackGroup, grid, shapeGroup, circleGroup, locationGroup)
-
+    let imgDom = document.querySelector(".image")
     //拖拽 缩放隐藏元素 提高性能
-    stage.on("dragstart dragend scalestart scaleend click tap", function (e) {
+    stage.on("dragstart  dragend scalestart scaleend click tap", function (e) {
       // e.cancelBubble = true;
+      
+      let pos = this.getPointerPosition()
       if (e.type == "dragend" || e.type == "scaleend") {
         shapeGroup.visible(true)
       } else if (e.type == "dragstart" || e.type == "scalestart") {
         shapeGroup.visible(false)
       } else if (e.type == "click" || e.type == "tap") {
-        let pos = baseMap.relativePosition(this.getPointerPosition()) //坐标系数据转换
-        anchor_Line2.dash([10, 5])
-        anchor_Line2.addPoints([pos.x, pos.y])
+        // let pos = baseMap.relativePosition(this.getPointerPosition()) //坐标系数据转换
+        // anchor_Line2.dash([10, 5])
+        // anchor_Line2.addPoints([pos.x, pos.y])
       }
-      console.log(e);
+      // console.log(e);
+      
     })
 
     //敲击事件
@@ -183,7 +200,7 @@
 
     anchor_Line.on("click tap ", function (e) {
       // console.log(e);
-      e.cancelBubble = true;
+      // e.cancelBubble = true;
       if (!this.draggable()) {
         // console.log(anchor_Line.clone());
         // let ce = this.clone()
@@ -203,6 +220,29 @@
         this.dash([])
       }
       targetShape = this
+      let pos = stage.getPointerPosition()
+
+
+      
+    })
+    anchor_Line.anchorChange(function(e){
+      // console.log(e);
+      let pos = e.getAbsolutePosition()
+
+      stage.toDataURL({
+        mimeType:"image/png",
+        x:pos.x -25,
+        y:pos.y -25,
+        pixelRatio:4,
+        width:50,
+        height:50,
+        callback(e){
+          // console.log(e);
+          imgDom.src = e
+        }
+      })
+      // imgDom.src = ''
+
     })
     // 锚点拖拽线 封装
     let anchor_Line2 = new KMaps.AnchorLine({
@@ -220,23 +260,19 @@
       // dash: [33, 10],
     })
 
-    anchor_Line2.on("click tap", function (e) {
+    anchor_Line2.on("click tap dragmove", function (e) {
       e.cancelBubble = true;
-      console.log(this.getPoints());
+      // console.log(this.getPoints());
       if (!this.draggable()) {
         // console.log(anchor_Line.clone());
         let ce = this.clone()
         this.draggable(true)
         this.anchorVisible(true)
         this.adsorb(true)
-
         // this.dash([10, 8])
-
         // shapeGroup.add(ce)
         this.moveToTop()
-
         // anchor_Line.removePoints(2) //添加锚点
-
       } else {
         this.draggable(false)
         // this.anchorVisible(false)
@@ -247,24 +283,13 @@
     })
 
     shapeGroup.add(anchor_Line, anchor_Line2)
-    document.querySelector(".shape").addEventListener('click', () => {
-      let anchor_Line2 = new KMaps.AnchorLine({
-        id: "aaa",
-        points: [[200, 200], [200, 500], [500, 500]],
-        stroke: "#aa9a07",
-        strokeWidth: 3,
-        hitStrokeWidth: 20,
-        anchorVisible: true,
-        draggable: true,
-        lineCap: "round",
-        lineJoin: "round",
-        // closed:true,
-        adsorb: true,
-        dash: [10, 5],
-      })
-      shapeGroup.add(anchor_Line2)
-
-    })
+    // let  Magnifying = new KMaps.Magnifying({
+    //   radius: 50,
+    //   // fill: "rgba(0,0,0,0)",
+    //   stroke: "#000000",
+    //   strokeWidth: 1
+    // })
+    // shapeGroup.add(Magnifying)
   </script>
 </body>
 

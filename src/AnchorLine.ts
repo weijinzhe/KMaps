@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2022-02-09 14:26:02
  * @LastEditors: wjz
- * @LastEditTime: 2022-04-08 16:57:46
+ * @LastEditTime: 2022-04-18 17:21:15
  * @FilePath: /kmaps/src/AnchorLine.ts
  */
 
@@ -58,6 +58,7 @@ interface attrs {
  * let node = new KMaps.AnchorLine({...})
  */
 export default class AnchorLine extends Konva.Group {
+  #anchorCallBack = (e:Function)=>{}
   constructor(attrs: attrs) {
     attrs["absoluteSize"] === false ? null : attrs["absoluteSize"] = true //绝对尺寸，与舞台一同缩放
     attrs["anchor"] === false ? null : attrs["anchor"] = true //拖拽锚点
@@ -178,7 +179,6 @@ export default class AnchorLine extends Konva.Group {
     if(index){
       this.findOne(`#_drag_anchor-${index-1}`).stroke("#00aaff")
     }
-    
     _anchor.on("dragstart.—custom dragmove.—custom dragend.—custom touchstart.—custom touchmove.—custom touchend.—custom", function (e: any) {
       e.cancelBubble = true;
       if(e.type == "dragmove"){
@@ -189,12 +189,17 @@ export default class AnchorLine extends Konva.Group {
           points.push(x, y)
         }
         self._line.points(points)
+        self.#anchorCallBack(this)
       }
       
     })
     
 
     return _anchor
+  }
+  anchorChange(callback:any){
+    
+    this.#anchorCallBack = callback
   }
 
   /**

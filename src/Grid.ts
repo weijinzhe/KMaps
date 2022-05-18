@@ -2,12 +2,12 @@
  * @Author: wjz
  * @Date: 2021-10-29 09:54:14
  * @LastEditors: wjz
- * @LastEditTime: 2021-12-30 13:56:38
+ * @LastEditTime: 2022-04-18 14:56:25
  * @FilePath: /kmaps/src/Grid.ts
  */
 import Konva from "./js/konva.min.js"
 
-import {wheelEvent} from './_util'
+// import {wheelEvent} from './_util'
 
 /**
  * @description 网格图层，网格参照层 参数详情查看 https://konvajs.org/api/Konva.Group.html文档

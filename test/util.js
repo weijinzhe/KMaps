@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-11-17 15:18:38
  * @LastEditors: wjz
- * @LastEditTime: 2021-11-22 19:12:58
+ * @LastEditTime: 2022-04-19 15:21:34
  * @FilePath: /kmaps/test/util.js
  */
 export function bezierData(data) {
@@ -10,7 +10,7 @@ export function bezierData(data) {
   data.forEach(items => {
     let arr = []
     items.edges.forEach((item, index, array) => {
-      //贝塞尔曲线升阶
+      //贝塞尔曲线合并
       let cor = []
       if (index == 0) {
         cor = [item.point[2], item.point[0], item.point[1], item.point[3]]

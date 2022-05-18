@@ -2,17 +2,18 @@
  * @Author: wjz
  * @Date: 2021-10-26 15:59:56
  * @LastEditors: wjz
- * @LastEditTime: 2022-02-14 09:47:15
+ * @LastEditTime: 2022-04-18 15:28:54
  * @FilePath: /kmaps/src/BaseMap.ts
  */
 import Konva from "./js/konva.min.js"
+
+
 /**
  * @description 底图类,用于绘制地图图片，计算初始坐标系
  * @constructor
  * @class
  * @extends {Konva.Image}
  * @param {boolean} awaitMap 是否等待底图绘制状态,开启坐标重置订阅器
- * 
  * @example 
  * let node = new BaseMap(可选参数) //详情参照Konva中的Image
  */

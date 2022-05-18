@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-21 15:30:30
  * @LastEditors: wjz
- * @LastEditTime: 2022-03-23 15:38:27
+ * @LastEditTime: 2022-04-18 16:21:28
  * @FilePath: /kmaps/src/index.ts
  */
 import Konva from './js/konva.min.js'
@@ -32,6 +32,7 @@ import Circle from './Circle';
 
 import Text from './Text';
 
+import Magnifying from "./Magnifying";
 export default {
     Konva,
     // Hammer,
@@ -53,5 +54,6 @@ export default {
     // Polygon,
     Circle,
     Text,
+    Magnifying,
     versions:"1.4.0"
 }

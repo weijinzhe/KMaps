@@ -2,7 +2,7 @@
  * @Author: wjz
  * @Date: 2021-10-22 16:20:15
  * @LastEditors: wjz
- * @LastEditTime: 2022-04-08 17:15:53
+ * @LastEditTime: 2022-04-12 10:31:50
  * @FilePath: /kmaps/src/_util.ts
  */
 
@@ -141,7 +141,6 @@ export function adsorb (target:any, layer:any) {
             // if(ta.indexOf(this) !== 0 && ta.indexOf(this) !== (ta.length-1)){
             if(ta.indexOf(this) >0 && ta.indexOf(this) < ta.length-1){ return }
             if(ta.indexOf(ar) !==0 && ta.indexOf(ar) !== ta.length-1){ return }
-
             if(this.getParent().attrs.closed){return}
           }
 
