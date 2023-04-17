@@ -2,9 +2,7 @@
 /.parcel-cache
 /.vscode
 /node_modules
-/dist
-/api
-/lib
+
 
 
 # local env files
